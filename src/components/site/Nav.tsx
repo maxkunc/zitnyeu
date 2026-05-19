@@ -1,7 +1,5 @@
-import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Rocket, Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const links = [
   { href: "#domu", label: "Domů" },

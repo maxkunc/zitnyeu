@@ -51,11 +51,6 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link to="/admin" className="hidden sm:inline">
-            <Button variant="outline" size="sm" className="border-primary/40 text-primary hover:bg-primary/10">
-              Admin
-            </Button>
-          </Link>
           <button
             className="lg:hidden p-2 rounded-md hover:bg-secondary"
             onClick={() => setOpen((v) => !v)}

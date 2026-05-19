@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 
 export function Hero() {
   return (
-    <section id="domu" className="relative pt-32 pb-24 overflow-hidden">
-      <div className="absolute inset-0 grid-bg opacity-40" />
-      <div className="absolute inset-0 starfield" />
-      <div className="absolute top-1/4 -right-32 h-96 w-96 rounded-full bg-primary/20 blur-3xl" />
-      <div className="absolute bottom-0 -left-32 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
+    <section id="domu" className="relative pt-32 pb-24">
+      <div className="absolute inset-0 grid-bg opacity-40 pointer-events-none" />
+      <div className="absolute inset-0 starfield pointer-events-none" />
+      <div className="absolute top-1/4 right-0 h-96 w-96 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs text-muted-foreground mb-8">

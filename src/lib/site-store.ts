@@ -5,7 +5,7 @@ export type Project = {
   title: string;
   description: string;
   status: string;
-  category: "major" | "minor" | "esa";
+  category: "major" | "minor" | "esa" | "past";
   image?: string;
 };
 
@@ -26,6 +26,7 @@ export type Achievement = {
 export type Sponsor = {
   id: string;
   name: string;
+  tier?: "general" | "main" | "media";
   url?: string;
 };
 
@@ -37,6 +38,13 @@ export type Message = {
   createdAt: string;
 };
 
+export type AuditLog = {
+  id: string;
+  who: string;
+  action: string;
+  at: string;
+};
+
 export type SiteData = {
   about: { heading: string; body: string };
   projects: Project[];
@@ -44,44 +52,108 @@ export type SiteData = {
   achievements: Achievement[];
   sponsors: Sponsor[];
   messages: Message[];
+  logs: AuditLog[];
 };
 
-const KEY = "zitny-site-data-v1";
+const KEY = "zitny-site-data-v2";
 
 const defaultData: SiteData = {
   about: {
     heading: "Mladí inženýři s pohledem k hvězdám",
-    body: "Jsme nezisková organizace mladých nadšenců, kteří propojují vesmírné technologie, vědu a vzdělávání. Stavíme experimenty, organizujeme workshopy a spolupracujeme s předními evropskými institucemi včetně Evropské vesmírné agentury.",
+    body: "Jsme nezisková iniciativa mladých nadšenců, kteří propojují vesmírné technologie, vědu a vzdělávání. Realizujeme projekty pod patronací Evropské vesmírné agentury, organizujeme workshopy pro školy a spolupracujeme s veřejnými i bezpečnostními složkami.",
   },
   achievements: [
-    { id: "a1", metric: "12+", label: "Úspěšných startů", description: "Stratosférické a raketové experimenty" },
-    { id: "a2", metric: "4", label: "Ocenění ESA", description: "Patronace nad našimi projekty" },
-    { id: "a3", metric: "2 500", label: "Účastníků workshopů", description: "Děti i studenti napříč ČR" },
-    { id: "a4", metric: "30+", label: "Realizovaných misí", description: "Od konceptu po výstup dat" },
+    { id: "a1", metric: "2×", label: "Ocenění AirVision", description: "Mezinárodní ekologický summit" },
+    { id: "a2", metric: "ESA", label: "Oficiální patronace", description: "Patronace nad jednotlivými projekty" },
+    { id: "a3", metric: "1 000+", label: "Účastníků programů", description: "Děti, studenti i veřejnost" },
+    { id: "a4", metric: "2", label: "Spolupráce s IZS", description: "HZS Středočeského kraje, JSDH Řevnice" },
   ],
   projects: [
-    { id: "p1", category: "major", title: "Mise STRATOS-3", status: "Aktivní", description: "Stratosférická sonda s vlastní telemetrií, palubním AI klasifikátorem oblak a návratovou kapslí." },
-    { id: "p2", category: "major", title: "CubeSat ORION-1", status: "Vývoj", description: "1U CubeSat zaměřený na měření radiace v nízké oběžné dráze, plánovaný start 2026." },
-    { id: "p3", category: "major", title: "Lunar Rover Prototype", status: "Prototyp", description: "Šestikolový průzkumný rover testovaný v simulovaném regolitu." },
-    { id: "p4", category: "minor", title: "Senzorový balónek EDU", status: "Dokončeno", description: "Vzdělávací sada pro školy — teplota, tlak, GPS." },
-    { id: "p5", category: "minor", title: "Ground Station Lite", status: "Aktivní", description: "Modulární pozemní stanice pro příjem APT a LoRa." },
-    { id: "p6", category: "minor", title: "Open Telemetry Kit", status: "Beta", description: "Open-source telemetrický stack pro amatérské mise." },
-    { id: "p7", category: "esa", title: "ESA Climate Detectives", status: "Pod patronací ESA", description: "Analýza satelitních dat o lokální klimatické změně ve spolupráci s ESA." },
-    { id: "p8", category: "esa", title: "ESA Moon Camp Challenge", status: "Pod patronací ESA", description: "Návrh lunární základny – vítězný tým evropského kola." },
+    {
+      id: "p1",
+      category: "major",
+      title: "AirVision",
+      status: "2× oceněno",
+      description:
+        "Vlajkový projekt zaměřený na monitoring kvality ovzduší pomocí dronů a senzorické platformy. Dvojnásobný laureát Mezinárodního ekologického summitu. (Projekt bude brzy přejmenován.)",
+    },
+    {
+      id: "p2",
+      category: "major",
+      title: "Cartographia Bohemica Kalifornia",
+      status: "Aktivní",
+      description:
+        "Mapovací projekt propojující český a kalifornský terén — kombinace satelitních dat, dronového snímkování a otevřené kartografie.",
+    },
+    {
+      id: "p3",
+      category: "esa",
+      title: "Den s Vesmírem",
+      status: "Pod patronací ESA",
+      description:
+        "Vzdělávací program pro školy a organizace. Zábavné aktivity spojené s vesmírem, raketami a drony — pod oficiální patronací ESA.",
+    },
+    {
+      id: "p4",
+      category: "esa",
+      title: "AstroPi Challenge — Mission Zero",
+      status: "Pod patronací ESA",
+      description: "Programátorská výzva ESA, ve které kód našich týmů poběží na palubě Mezinárodní vesmírné stanice (ISS).",
+    },
+    {
+      id: "p5",
+      category: "esa",
+      title: "SpaceLab",
+      status: "Pod patronací ESA",
+      description: "Studentský vědecký program ESA — návrh a realizace experimentů v simulovaném vesmírném prostředí.",
+    },
+    {
+      id: "p6",
+      category: "esa",
+      title: "MoonCamp Challenge",
+      status: "Pod patronací ESA",
+      description: "Mezinárodní výzva ESA na návrh udržitelné lunární základny. Vedeme studentské týmy k vlastním návrhům.",
+    },
+    {
+      id: "p7",
+      category: "past",
+      title: "Spolupráce s HZS Středočeského kraje",
+      status: "Realizováno",
+      description: "Společné cvičení a sdílení know-how v oblasti dronových technologií s Hasičským záchranným sborem Středočeského kraje.",
+    },
+    {
+      id: "p8",
+      category: "past",
+      title: "Spolupráce s JSDH Řevnice",
+      status: "Realizováno",
+      description: "Podpora a školení Jednotky sboru dobrovolných hasičů Řevnice v nasazení moderních technologií při zásahu.",
+    },
   ],
   workshops: [
-    { id: "w1", title: "Den s vesmírem", description: "Celodenní program plný experimentů, modelů raket a setkání s inženýry z oboru. Pro školy i veřejnost.", date: "Celoročně" },
-    { id: "w2", title: "Pohodový den pro Dům Ronalda McDonalda", description: "Charitativní program pro děti a rodiny — pouštění raket, astronomické pozorování a tvořivé dílny.", date: "Každoročně" },
+    {
+      id: "w1",
+      title: "Den s Vesmírem",
+      description:
+        "Celodenní program plný experimentů, raketových modelů, dronových aktivit a setkání s lidmi z oboru. Pro školy, menší i větší organizace.",
+      date: "Celoročně — na objednávku",
+    },
+    {
+      id: "w2",
+      title: "Pohodový den pro Dům Ronalda McDonalda",
+      description:
+        "Plánovaný charitativní program pro děti a rodiny v Domě Ronalda McDonalda — pouštění raket, astronomické pozorování a tvořivé dílny.",
+      date: "Plánováno",
+    },
   ],
   sponsors: [
-    { id: "s1", name: "ESA" },
-    { id: "s2", name: "CzechInvest" },
-    { id: "s3", name: "ČVUT" },
-    { id: "s4", name: "AVANT" },
-    { id: "s5", name: "Honeywell" },
-    { id: "s6", name: "Skylink" },
+    { id: "s1", name: "ESA", tier: "general" },
+    { id: "s2", name: "HZS Středočeského kraje", tier: "main" },
+    { id: "s3", name: "JSDH Řevnice", tier: "main" },
+    { id: "s4", name: "AstroPi", tier: "media" },
+    { id: "s5", name: "MoonCamp", tier: "media" },
   ],
   messages: [],
+  logs: [],
 };
 
 function read(): SiteData {
@@ -109,9 +181,7 @@ function emit() {
 
 function write(next: SiteData) {
   cache = next;
-  if (typeof window !== "undefined") {
-    localStorage.setItem(KEY, JSON.stringify(next));
-  }
+  if (typeof window !== "undefined") localStorage.setItem(KEY, JSON.stringify(next));
   emit();
 }
 
@@ -131,28 +201,46 @@ export function useSite() {
       const next = typeof patch === "function" ? patch(data) : { ...data, ...patch };
       write(next);
     },
+    log: (who: string, action: string) => {
+      const entry: AuditLog = { id: uid(), who, action, at: new Date().toISOString() };
+      const next = { ...data, logs: [entry, ...(data.logs || [])].slice(0, 200) };
+      write(next);
+    },
     reset: () => write(defaultData),
   };
 }
 
+// 3 mock účty
+const ACCOUNTS: Record<string, { pass: string; role: string }> = {
+  admin: { pass: "esa2026", role: "Hlavní administrátor" },
+  koordinator: { pass: "stratos", role: "Koordinátor projektů" },
+  editor: { pass: "rocket", role: "Editor obsahu" },
+};
+
+const AUTH_KEY = "zitny-admin-auth-v2";
+
 export function useAuth() {
-  const [authed, setAuthed] = useState<boolean>(false);
+  const [user, setUser] = useState<string | null>(null);
   useEffect(() => {
-    setAuthed(localStorage.getItem("zitny-admin-auth") === "1");
+    setUser(localStorage.getItem(AUTH_KEY));
   }, []);
   return {
-    authed,
-    login: (user: string, pass: string) => {
-      if (user === "admin" && pass === "esa2026") {
-        localStorage.setItem("zitny-admin-auth", "1");
-        setAuthed(true);
+    user,
+    authed: !!user,
+    role: user ? ACCOUNTS[user]?.role : undefined,
+    accounts: Object.entries(ACCOUNTS).map(([u, v]) => ({ user: u, role: v.role })),
+    login: (u: string, p: string) => {
+      const acc = ACCOUNTS[u.trim()];
+      if (acc && acc.pass === p) {
+        localStorage.setItem(AUTH_KEY, u.trim());
+        setUser(u.trim());
         return true;
       }
       return false;
     },
     logout: () => {
-      localStorage.removeItem("zitny-admin-auth");
-      setAuthed(false);
+      localStorage.removeItem(AUTH_KEY);
+      setUser(null);
     },
   };
 }

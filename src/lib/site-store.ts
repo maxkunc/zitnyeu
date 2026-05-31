@@ -89,7 +89,8 @@ const defaultData: SiteData = {
     },
     {
       id: "p3",
-      category: "esa",
+      category: "major",
+      esa: true,
       title: "Den s Vesmírem",
       status: "Pod patronací ESA",
       description:
@@ -97,21 +98,24 @@ const defaultData: SiteData = {
     },
     {
       id: "p4",
-      category: "esa",
+      category: "minor",
+      esa: true,
       title: "AstroPi Challenge — Mission Zero",
       status: "Pod patronací ESA",
       description: "Programátorská výzva ESA, ve které kód našich týmů poběží na palubě Mezinárodní vesmírné stanice (ISS).",
     },
     {
       id: "p5",
-      category: "esa",
+      category: "minor",
+      esa: true,
       title: "SpaceLab",
       status: "Pod patronací ESA",
       description: "Studentský vědecký program ESA — návrh a realizace experimentů v simulovaném vesmírném prostředí.",
     },
     {
       id: "p6",
-      category: "esa",
+      category: "minor",
+      esa: true,
       title: "MoonCamp Challenge",
       status: "Pod patronací ESA",
       description: "Mezinárodní výzva ESA na návrh udržitelné lunární základny. Vedeme studentské týmy k vlastním návrhům.",

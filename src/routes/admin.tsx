@@ -171,13 +171,13 @@ function Overview() {
 function ProjectsAdmin() {
   const { data, update, log } = useSite();
   const { user } = useAuth();
-  const [draft, setDraft] = useState<Project>({ id: "", title: "", description: "", status: "Aktivní", category: "major" });
+  const [draft, setDraft] = useState<Project>({ id: "", title: "", description: "", status: "Aktivní", category: "major", esa: false, image: "" });
 
   const add = () => {
     if (!draft.title.trim()) return toast.error("Zadejte název");
     update((d) => ({ ...d, projects: [{ ...draft, id: uid() }, ...d.projects] }));
     log(user!, `Přidal projekt „${draft.title}"`);
-    setDraft({ id: "", title: "", description: "", status: "Aktivní", category: "major" });
+    setDraft({ id: "", title: "", description: "", status: "Aktivní", category: "major", esa: false, image: "" });
     toast.success("Projekt přidán");
   };
   const remove = (id: string, title: string) => {
@@ -188,39 +188,67 @@ function ProjectsAdmin() {
     update((d) => ({ ...d, projects: d.projects.map((p) => (p.id === id ? { ...p, ...patch } : p)) }));
   const commitEdit = (title: string) => log(user!, `Upravil projekt „${title}"`);
 
+  const onFile = (cb: (dataUrl: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => cb(String(reader.result));
+    reader.readAsDataURL(f);
+  };
+
   return (
-    <Section title="Projekty" subtitle="Velké projekty, ESA patronace, menší výzvy a realizované spolupráce">
-      <div className="glass rounded-xl p-5 mb-6">
+    <Section title="Projekty" subtitle="Velké projekty, menší výzvy a realizované spolupráce. ESA patronace je vlastnost projektu — zapnutelná pro libovolnou kategorii.">
+      <div className="glass rounded-xl p-5 mb-6 space-y-3">
         <div className="grid md:grid-cols-2 gap-3">
           <Input placeholder="Název projektu" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} className="bg-background/40" />
-          <Input placeholder="Status" value={draft.status} onChange={(e) => setDraft({ ...draft, status: e.target.value })} className="bg-background/40" />
+          <Input placeholder="Status (např. Aktivní)" value={draft.status} onChange={(e) => setDraft({ ...draft, status: e.target.value })} className="bg-background/40" />
           <select value={draft.category} onChange={(e) => setDraft({ ...draft, category: e.target.value as Project["category"] })} className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm">
             <option value="major">Velký projekt</option>
-            <option value="esa">ESA patronace</option>
             <option value="minor">Menší / výzva</option>
             <option value="past">Realizováno</option>
           </select>
+          <label className="flex items-center gap-2 text-sm glass rounded-md px-3 h-10 cursor-pointer">
+            <input type="checkbox" checked={!!draft.esa} onChange={(e) => setDraft({ ...draft, esa: e.target.checked })} />
+            Pod patronací ESA
+          </label>
+        </div>
+        <Textarea placeholder="Popis" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} className="bg-background/40" rows={2} />
+        <div className="grid md:grid-cols-[1fr_auto_auto] gap-3 items-center">
+          <Input placeholder="URL obrázku (nebo nahrajte)" value={draft.image || ""} onChange={(e) => setDraft({ ...draft, image: e.target.value })} className="bg-background/40" />
+          <input type="file" accept="image/*" onChange={onFile((url) => setDraft({ ...draft, image: url }))} className="text-xs" />
           <Button onClick={add} className="bg-gradient-cyber text-primary-foreground">
             <Plus className="h-4 w-4 mr-2" /> Přidat projekt
           </Button>
         </div>
-        <Textarea placeholder="Popis" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} className="mt-3 bg-background/40" rows={2} />
+        {draft.image && <img src={draft.image} alt="" className="h-20 rounded-md object-cover" />}
       </div>
 
       <div className="grid gap-3">
         {data.projects.map((p) => (
-          <div key={p.id} className="glass rounded-xl p-4 grid md:grid-cols-[1fr_140px_140px_auto] gap-3 items-start">
-            <div>
+          <div key={p.id} className="glass rounded-xl p-4 grid md:grid-cols-[80px_1fr_140px_140px_auto_auto] gap-3 items-start">
+            {p.image ? (
+              <img src={p.image} alt={p.title} className="h-20 w-20 rounded-md object-cover" />
+            ) : (
+              <div className="h-20 w-20 rounded-md grid-bg border border-border" />
+            )}
+            <div className="space-y-2">
               <Input value={p.title} onChange={(e) => edit(p.id, { title: e.target.value })} onBlur={() => commitEdit(p.title)} className="bg-background/40 font-semibold" />
-              <Textarea value={p.description} onChange={(e) => edit(p.id, { description: e.target.value })} onBlur={() => commitEdit(p.title)} className="bg-background/40 mt-2" rows={2} />
+              <Textarea value={p.description} onChange={(e) => edit(p.id, { description: e.target.value })} onBlur={() => commitEdit(p.title)} className="bg-background/40" rows={2} />
+              <div className="flex items-center gap-2">
+                <Input placeholder="URL obrázku" value={p.image || ""} onChange={(e) => edit(p.id, { image: e.target.value })} className="bg-background/40 text-xs h-8" />
+                <input type="file" accept="image/*" onChange={onFile((url) => { edit(p.id, { image: url }); commitEdit(p.title); })} className="text-xs w-32" />
+              </div>
             </div>
             <Input value={p.status} onChange={(e) => edit(p.id, { status: e.target.value })} onBlur={() => commitEdit(p.title)} className="bg-background/40" />
             <select value={p.category} onChange={(e) => { edit(p.id, { category: e.target.value as Project["category"] }); commitEdit(p.title); }} className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm">
               <option value="major">Velký</option>
-              <option value="esa">ESA</option>
               <option value="minor">Menší</option>
               <option value="past">Realizováno</option>
             </select>
+            <label className="flex items-center gap-2 text-xs whitespace-nowrap">
+              <input type="checkbox" checked={!!p.esa} onChange={(e) => { edit(p.id, { esa: e.target.checked }); commitEdit(p.title); }} />
+              ESA
+            </label>
             <Button variant="ghost" size="icon" onClick={() => remove(p.id, p.title)} className="text-destructive">
               <Trash2 className="h-4 w-4" />
             </Button>

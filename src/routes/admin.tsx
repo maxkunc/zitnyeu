@@ -149,7 +149,7 @@ function Overview() {
   const stats = [
     { l: "Projektů celkem", v: data.projects.length },
     { l: "Velkých", v: data.projects.filter((p) => p.category === "major").length },
-    { l: "ESA", v: data.projects.filter((p) => p.category === "esa").length },
+    { l: "S patronací ESA", v: data.projects.filter((p) => p.esa).length },
     { l: "Workshopů", v: data.workshops.length },
     { l: "Partnerů", v: data.sponsors.length },
     { l: "Zpráv", v: data.messages.length },

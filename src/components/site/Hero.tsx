@@ -1,6 +1,7 @@
-import { Rocket, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLang } from "@/lib/i18n";
+import logoUrl from "@/assets/zitair-logo.png";
 
 export function Hero() {
   const { t } = useLang();

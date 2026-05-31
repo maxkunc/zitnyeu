@@ -49,7 +49,7 @@ export function Hero() {
           ))}
         </div>
 
-        <Rocket className="hidden md:block absolute right-12 bottom-12 h-24 w-24 text-primary/30 animate-float -rotate-45" />
+        
       </div>
     </section>
   );

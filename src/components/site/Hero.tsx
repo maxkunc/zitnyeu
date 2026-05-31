@@ -1,6 +1,7 @@
-import { Rocket, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLang } from "@/lib/i18n";
+import logoUrl from "@/assets/zitair-logo.png";
 
 export function Hero() {
   const { t } = useLang();
@@ -48,7 +49,7 @@ export function Hero() {
           ))}
         </div>
 
-        <Rocket className="hidden md:block absolute right-12 bottom-12 h-24 w-24 text-primary/30 animate-float -rotate-45" />
+        
       </div>
     </section>
   );

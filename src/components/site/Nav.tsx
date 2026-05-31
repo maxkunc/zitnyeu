@@ -28,9 +28,14 @@ export function Nav() {
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-all ${scrolled ? "glass shadow-card" : "bg-transparent"}`}>
       <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between gap-4">
-        <a href="#domu" className="flex items-center gap-2.5 group shrink-0">
-          <span className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/95 shadow-glow p-1">
-            <img src={logoUrl} alt="ŽitAir logo" className="h-full w-full object-contain" />
+        <a href="#domu" className="flex items-center gap-3 group shrink-0">
+          <span className="relative inline-flex h-10 w-10 items-center justify-center">
+            <span className="absolute inset-0 rounded-full bg-primary/20 blur-md group-hover:bg-primary/40 transition-colors" />
+            <img
+              src={logoUrl}
+              alt="ŽitAir"
+              className="relative h-9 w-9 object-contain invert opacity-90 group-hover:opacity-100 transition-all group-hover:rotate-12"
+            />
           </span>
           <span className="font-display text-xl font-bold tracking-tight">
             zitny<span className="text-primary">.eu</span>

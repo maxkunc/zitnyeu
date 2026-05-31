@@ -352,42 +352,66 @@ function SponsorsAdmin() {
   const { user } = useAuth();
   const [name, setName] = useState("");
   const [tier, setTier] = useState<Sponsor["tier"]>("main");
+  const [logo, setLogo] = useState("");
+
+  const onFile = (cb: (dataUrl: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => cb(String(reader.result));
+    reader.readAsDataURL(f);
+  };
+
   const add = () => {
     if (!name.trim()) return;
-    update((d) => ({ ...d, sponsors: [...d.sponsors, { id: uid(), name, tier } as Sponsor] }));
+    update((d) => ({ ...d, sponsors: [...d.sponsors, { id: uid(), name, tier, logo } as Sponsor] }));
     log(user!, `Přidal partnera „${name}"`);
-    setName("");
+    setName(""); setLogo("");
   };
   const remove = (id: string, n: string) => {
     update((d) => ({ ...d, sponsors: d.sponsors.filter((s) => s.id !== id) }));
     log(user!, `Smazal partnera „${n}"`);
   };
-  const editTier = (id: string, t: Sponsor["tier"]) =>
-    update((d) => ({ ...d, sponsors: d.sponsors.map((s) => (s.id === id ? { ...s, tier: t } : s)) }));
+  const editSponsor = (id: string, patch: Partial<Sponsor>) =>
+    update((d) => ({ ...d, sponsors: d.sponsors.map((s) => (s.id === id ? { ...s, ...patch } : s)) }));
 
   return (
-    <Section title="Partneři" subtitle="Generální, hlavní a mediální partneři">
-      <div className="glass rounded-xl p-5 mb-6 grid md:grid-cols-[1fr_180px_auto] gap-3">
-        <Input placeholder="Název partnera" value={name} onChange={(e) => setName(e.target.value)} className="bg-background/40" />
-        <select value={tier} onChange={(e) => setTier(e.target.value as Sponsor["tier"])} className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm">
-          <option value="general">Generální</option>
-          <option value="main">Hlavní</option>
-          <option value="media">Mediální</option>
-        </select>
-        <Button onClick={add} className="bg-gradient-cyber text-primary-foreground shrink-0">
-          <Plus className="h-4 w-4 mr-2" /> Přidat
-        </Button>
+    <Section title="Partneři" subtitle="Generální, hlavní a mediální partneři. Můžete nahrát logo (PNG s průhledným pozadím funguje nejlépe).">
+      <div className="glass rounded-xl p-5 mb-6 space-y-3">
+        <div className="grid md:grid-cols-[1fr_180px_auto] gap-3">
+          <Input placeholder="Název partnera" value={name} onChange={(e) => setName(e.target.value)} className="bg-background/40" />
+          <select value={tier} onChange={(e) => setTier(e.target.value as Sponsor["tier"])} className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm">
+            <option value="general">Generální</option>
+            <option value="main">Hlavní</option>
+            <option value="media">Mediální</option>
+          </select>
+          <Button onClick={add} className="bg-gradient-cyber text-primary-foreground shrink-0">
+            <Plus className="h-4 w-4 mr-2" /> Přidat
+          </Button>
+        </div>
+        <div className="flex items-center gap-3">
+          <Input placeholder="URL loga (nebo nahrajte)" value={logo} onChange={(e) => setLogo(e.target.value)} className="bg-background/40" />
+          <input type="file" accept="image/*" onChange={onFile(setLogo)} className="text-xs" />
+          {logo && <img src={logo} alt="" className="h-10 w-10 object-contain bg-white/5 rounded" />}
+        </div>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {data.sponsors.map((s) => (
-          <div key={s.id} className="glass rounded-xl p-4 flex items-center justify-between gap-3">
-            <div>
-              <div className="font-display font-semibold">{s.name}</div>
-              <select value={s.tier || "main"} onChange={(e) => editTier(s.id, e.target.value as Sponsor["tier"])} className="bg-background/40 border border-border rounded-md px-2 h-7 text-xs mt-1">
+          <div key={s.id} className="glass rounded-xl p-4 flex items-center gap-3">
+            <div className="h-14 w-14 shrink-0 rounded-md bg-white/5 border border-border flex items-center justify-center overflow-hidden">
+              {s.logo ? <img src={s.logo} alt={s.name} className="h-full w-full object-contain" /> : <Building2 className="h-5 w-5 text-muted-foreground" />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-display font-semibold truncate">{s.name}</div>
+              <select value={s.tier || "main"} onChange={(e) => editSponsor(s.id, { tier: e.target.value as Sponsor["tier"] })} className="bg-background/40 border border-border rounded-md px-2 h-7 text-xs mt-1">
                 <option value="general">Generální</option>
                 <option value="main">Hlavní</option>
                 <option value="media">Mediální</option>
               </select>
+              <div className="flex items-center gap-1 mt-1">
+                <Input placeholder="URL loga" value={s.logo || ""} onChange={(e) => editSponsor(s.id, { logo: e.target.value })} className="bg-background/40 text-xs h-7" />
+                <input type="file" accept="image/*" onChange={onFile((url) => editSponsor(s.id, { logo: url }))} className="text-[10px] w-24" />
+              </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => remove(s.id, s.name)} className="text-destructive">
               <Trash2 className="h-4 w-4" />

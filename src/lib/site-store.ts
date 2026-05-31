@@ -5,7 +5,8 @@ export type Project = {
   title: string;
   description: string;
   status: string;
-  category: "major" | "minor" | "esa" | "past";
+  category: "major" | "minor" | "past";
+  esa?: boolean;
   image?: string;
 };
 
@@ -28,6 +29,7 @@ export type Sponsor = {
   name: string;
   tier?: "general" | "main" | "media";
   url?: string;
+  logo?: string;
 };
 
 export type Message = {

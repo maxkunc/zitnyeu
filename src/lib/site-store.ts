@@ -57,7 +57,7 @@ export type SiteData = {
   logs: AuditLog[];
 };
 
-const KEY = "zitny-site-data-v2";
+const KEY = "zitny-site-data-v3";
 
 const defaultData: SiteData = {
   about: {

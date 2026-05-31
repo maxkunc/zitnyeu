@@ -35,15 +35,24 @@ export function Sponsors() {
         <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
         <div className="flex gap-6 animate-marquee w-max">
           {doubled.map((s, i) => (
-            <div key={`${s.id}-${i}`} className="glass rounded-xl px-10 py-6 min-w-[220px] flex flex-col items-center justify-center text-center">
-              {s.tier && (
-                <span className="text-[10px] font-mono uppercase tracking-wider text-primary mb-2">
-                  {tiers[s.tier]}
+            <div key={`${s.id}-${i}`} className="glass rounded-xl px-8 py-5 min-w-[220px] flex items-center gap-4">
+              <div className="h-14 w-14 shrink-0 rounded-md bg-white/5 border border-border flex items-center justify-center overflow-hidden">
+                {s.logo ? (
+                  <img src={s.logo} alt={s.name} className="h-full w-full object-contain p-1" />
+                ) : (
+                  <span className="font-display text-lg font-bold text-muted-foreground">{s.name.slice(0, 2).toUpperCase()}</span>
+                )}
+              </div>
+              <div className="text-left">
+                {s.tier && (
+                  <span className="block text-[10px] font-mono uppercase tracking-wider text-primary">
+                    {tiers[s.tier]}
+                  </span>
+                )}
+                <span className="font-display text-sm font-bold tracking-wide text-foreground">
+                  {s.name}
                 </span>
-              )}
-              <span className="font-display text-xl font-bold tracking-wider text-muted-foreground hover:text-foreground transition-colors">
-                {s.name}
-              </span>
+              </div>
             </div>
           ))}
         </div>

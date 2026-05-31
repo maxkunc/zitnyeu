@@ -112,7 +112,7 @@ export function Contacts() {
             <Rocket className="h-4 w-4 text-primary" />
             <span>© {new Date().getFullYear()} zitny.eu — {t("footer_tagline")}</span>
           </div>
-          <div className="font-mono text-xs">Made with ❤️ in Prague</div>
+          <div className="font-mono text-[11px] opacity-70">made by reddos</div>
         </footer>
       </div>
     </section>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Rocket, Menu, X, Languages } from "lucide-react";
+import { Menu, X, Languages } from "lucide-react";
+import logoUrl from "@/assets/zitair-logo.png";
 import { useLang } from "@/lib/i18n";
 
 export function Nav() {
@@ -27,9 +28,9 @@ export function Nav() {
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-all ${scrolled ? "glass shadow-card" : "bg-transparent"}`}>
       <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between gap-4">
-        <a href="#domu" className="flex items-center gap-2 group shrink-0">
-          <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-cyber shadow-glow">
-            <Rocket className="h-5 w-5 text-primary-foreground" />
+        <a href="#domu" className="flex items-center gap-2.5 group shrink-0">
+          <span className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/95 shadow-glow p-1">
+            <img src={logoUrl} alt="ŽitAir logo" className="h-full w-full object-contain" />
           </span>
           <span className="font-display text-xl font-bold tracking-tight">
             zitny<span className="text-primary">.eu</span>

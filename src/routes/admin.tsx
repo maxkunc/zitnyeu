@@ -149,7 +149,7 @@ function Overview() {
   const stats = [
     { l: "Projektů celkem", v: data.projects.length },
     { l: "Velkých", v: data.projects.filter((p) => p.category === "major").length },
-    { l: "ESA", v: data.projects.filter((p) => p.category === "esa").length },
+    { l: "S patronací ESA", v: data.projects.filter((p) => p.esa).length },
     { l: "Workshopů", v: data.workshops.length },
     { l: "Partnerů", v: data.sponsors.length },
     { l: "Zpráv", v: data.messages.length },
@@ -171,13 +171,13 @@ function Overview() {
 function ProjectsAdmin() {
   const { data, update, log } = useSite();
   const { user } = useAuth();
-  const [draft, setDraft] = useState<Project>({ id: "", title: "", description: "", status: "Aktivní", category: "major" });
+  const [draft, setDraft] = useState<Project>({ id: "", title: "", description: "", status: "Aktivní", category: "major", esa: false, image: "" });
 
   const add = () => {
     if (!draft.title.trim()) return toast.error("Zadejte název");
     update((d) => ({ ...d, projects: [{ ...draft, id: uid() }, ...d.projects] }));
     log(user!, `Přidal projekt „${draft.title}"`);
-    setDraft({ id: "", title: "", description: "", status: "Aktivní", category: "major" });
+    setDraft({ id: "", title: "", description: "", status: "Aktivní", category: "major", esa: false, image: "" });
     toast.success("Projekt přidán");
   };
   const remove = (id: string, title: string) => {
@@ -188,39 +188,67 @@ function ProjectsAdmin() {
     update((d) => ({ ...d, projects: d.projects.map((p) => (p.id === id ? { ...p, ...patch } : p)) }));
   const commitEdit = (title: string) => log(user!, `Upravil projekt „${title}"`);
 
+  const onFile = (cb: (dataUrl: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => cb(String(reader.result));
+    reader.readAsDataURL(f);
+  };
+
   return (
-    <Section title="Projekty" subtitle="Velké projekty, ESA patronace, menší výzvy a realizované spolupráce">
-      <div className="glass rounded-xl p-5 mb-6">
+    <Section title="Projekty" subtitle="Velké projekty, menší výzvy a realizované spolupráce. ESA patronace je vlastnost projektu — zapnutelná pro libovolnou kategorii.">
+      <div className="glass rounded-xl p-5 mb-6 space-y-3">
         <div className="grid md:grid-cols-2 gap-3">
           <Input placeholder="Název projektu" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} className="bg-background/40" />
-          <Input placeholder="Status" value={draft.status} onChange={(e) => setDraft({ ...draft, status: e.target.value })} className="bg-background/40" />
+          <Input placeholder="Status (např. Aktivní)" value={draft.status} onChange={(e) => setDraft({ ...draft, status: e.target.value })} className="bg-background/40" />
           <select value={draft.category} onChange={(e) => setDraft({ ...draft, category: e.target.value as Project["category"] })} className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm">
             <option value="major">Velký projekt</option>
-            <option value="esa">ESA patronace</option>
             <option value="minor">Menší / výzva</option>
             <option value="past">Realizováno</option>
           </select>
+          <label className="flex items-center gap-2 text-sm glass rounded-md px-3 h-10 cursor-pointer">
+            <input type="checkbox" checked={!!draft.esa} onChange={(e) => setDraft({ ...draft, esa: e.target.checked })} />
+            Pod patronací ESA
+          </label>
+        </div>
+        <Textarea placeholder="Popis" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} className="bg-background/40" rows={2} />
+        <div className="grid md:grid-cols-[1fr_auto_auto] gap-3 items-center">
+          <Input placeholder="URL obrázku (nebo nahrajte)" value={draft.image || ""} onChange={(e) => setDraft({ ...draft, image: e.target.value })} className="bg-background/40" />
+          <input type="file" accept="image/*" onChange={onFile((url) => setDraft({ ...draft, image: url }))} className="text-xs" />
           <Button onClick={add} className="bg-gradient-cyber text-primary-foreground">
             <Plus className="h-4 w-4 mr-2" /> Přidat projekt
           </Button>
         </div>
-        <Textarea placeholder="Popis" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} className="mt-3 bg-background/40" rows={2} />
+        {draft.image && <img src={draft.image} alt="" className="h-20 rounded-md object-cover" />}
       </div>
 
       <div className="grid gap-3">
         {data.projects.map((p) => (
-          <div key={p.id} className="glass rounded-xl p-4 grid md:grid-cols-[1fr_140px_140px_auto] gap-3 items-start">
-            <div>
+          <div key={p.id} className="glass rounded-xl p-4 grid md:grid-cols-[80px_1fr_140px_140px_auto_auto] gap-3 items-start">
+            {p.image ? (
+              <img src={p.image} alt={p.title} className="h-20 w-20 rounded-md object-cover" />
+            ) : (
+              <div className="h-20 w-20 rounded-md grid-bg border border-border" />
+            )}
+            <div className="space-y-2">
               <Input value={p.title} onChange={(e) => edit(p.id, { title: e.target.value })} onBlur={() => commitEdit(p.title)} className="bg-background/40 font-semibold" />
-              <Textarea value={p.description} onChange={(e) => edit(p.id, { description: e.target.value })} onBlur={() => commitEdit(p.title)} className="bg-background/40 mt-2" rows={2} />
+              <Textarea value={p.description} onChange={(e) => edit(p.id, { description: e.target.value })} onBlur={() => commitEdit(p.title)} className="bg-background/40" rows={2} />
+              <div className="flex items-center gap-2">
+                <Input placeholder="URL obrázku" value={p.image || ""} onChange={(e) => edit(p.id, { image: e.target.value })} className="bg-background/40 text-xs h-8" />
+                <input type="file" accept="image/*" onChange={onFile((url) => { edit(p.id, { image: url }); commitEdit(p.title); })} className="text-xs w-32" />
+              </div>
             </div>
             <Input value={p.status} onChange={(e) => edit(p.id, { status: e.target.value })} onBlur={() => commitEdit(p.title)} className="bg-background/40" />
             <select value={p.category} onChange={(e) => { edit(p.id, { category: e.target.value as Project["category"] }); commitEdit(p.title); }} className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm">
               <option value="major">Velký</option>
-              <option value="esa">ESA</option>
               <option value="minor">Menší</option>
               <option value="past">Realizováno</option>
             </select>
+            <label className="flex items-center gap-2 text-xs whitespace-nowrap">
+              <input type="checkbox" checked={!!p.esa} onChange={(e) => { edit(p.id, { esa: e.target.checked }); commitEdit(p.title); }} />
+              ESA
+            </label>
             <Button variant="ghost" size="icon" onClick={() => remove(p.id, p.title)} className="text-destructive">
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -324,42 +352,66 @@ function SponsorsAdmin() {
   const { user } = useAuth();
   const [name, setName] = useState("");
   const [tier, setTier] = useState<Sponsor["tier"]>("main");
+  const [logo, setLogo] = useState("");
+
+  const onFile = (cb: (dataUrl: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => cb(String(reader.result));
+    reader.readAsDataURL(f);
+  };
+
   const add = () => {
     if (!name.trim()) return;
-    update((d) => ({ ...d, sponsors: [...d.sponsors, { id: uid(), name, tier } as Sponsor] }));
+    update((d) => ({ ...d, sponsors: [...d.sponsors, { id: uid(), name, tier, logo } as Sponsor] }));
     log(user!, `Přidal partnera „${name}"`);
-    setName("");
+    setName(""); setLogo("");
   };
   const remove = (id: string, n: string) => {
     update((d) => ({ ...d, sponsors: d.sponsors.filter((s) => s.id !== id) }));
     log(user!, `Smazal partnera „${n}"`);
   };
-  const editTier = (id: string, t: Sponsor["tier"]) =>
-    update((d) => ({ ...d, sponsors: d.sponsors.map((s) => (s.id === id ? { ...s, tier: t } : s)) }));
+  const editSponsor = (id: string, patch: Partial<Sponsor>) =>
+    update((d) => ({ ...d, sponsors: d.sponsors.map((s) => (s.id === id ? { ...s, ...patch } : s)) }));
 
   return (
-    <Section title="Partneři" subtitle="Generální, hlavní a mediální partneři">
-      <div className="glass rounded-xl p-5 mb-6 grid md:grid-cols-[1fr_180px_auto] gap-3">
-        <Input placeholder="Název partnera" value={name} onChange={(e) => setName(e.target.value)} className="bg-background/40" />
-        <select value={tier} onChange={(e) => setTier(e.target.value as Sponsor["tier"])} className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm">
-          <option value="general">Generální</option>
-          <option value="main">Hlavní</option>
-          <option value="media">Mediální</option>
-        </select>
-        <Button onClick={add} className="bg-gradient-cyber text-primary-foreground shrink-0">
-          <Plus className="h-4 w-4 mr-2" /> Přidat
-        </Button>
+    <Section title="Partneři" subtitle="Generální, hlavní a mediální partneři. Můžete nahrát logo (PNG s průhledným pozadím funguje nejlépe).">
+      <div className="glass rounded-xl p-5 mb-6 space-y-3">
+        <div className="grid md:grid-cols-[1fr_180px_auto] gap-3">
+          <Input placeholder="Název partnera" value={name} onChange={(e) => setName(e.target.value)} className="bg-background/40" />
+          <select value={tier} onChange={(e) => setTier(e.target.value as Sponsor["tier"])} className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm">
+            <option value="general">Generální</option>
+            <option value="main">Hlavní</option>
+            <option value="media">Mediální</option>
+          </select>
+          <Button onClick={add} className="bg-gradient-cyber text-primary-foreground shrink-0">
+            <Plus className="h-4 w-4 mr-2" /> Přidat
+          </Button>
+        </div>
+        <div className="flex items-center gap-3">
+          <Input placeholder="URL loga (nebo nahrajte)" value={logo} onChange={(e) => setLogo(e.target.value)} className="bg-background/40" />
+          <input type="file" accept="image/*" onChange={onFile(setLogo)} className="text-xs" />
+          {logo && <img src={logo} alt="" className="h-10 w-10 object-contain bg-white/5 rounded" />}
+        </div>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {data.sponsors.map((s) => (
-          <div key={s.id} className="glass rounded-xl p-4 flex items-center justify-between gap-3">
-            <div>
-              <div className="font-display font-semibold">{s.name}</div>
-              <select value={s.tier || "main"} onChange={(e) => editTier(s.id, e.target.value as Sponsor["tier"])} className="bg-background/40 border border-border rounded-md px-2 h-7 text-xs mt-1">
+          <div key={s.id} className="glass rounded-xl p-4 flex items-center gap-3">
+            <div className="h-14 w-14 shrink-0 rounded-md bg-white/5 border border-border flex items-center justify-center overflow-hidden">
+              {s.logo ? <img src={s.logo} alt={s.name} className="h-full w-full object-contain" /> : <Building2 className="h-5 w-5 text-muted-foreground" />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-display font-semibold truncate">{s.name}</div>
+              <select value={s.tier || "main"} onChange={(e) => editSponsor(s.id, { tier: e.target.value as Sponsor["tier"] })} className="bg-background/40 border border-border rounded-md px-2 h-7 text-xs mt-1">
                 <option value="general">Generální</option>
                 <option value="main">Hlavní</option>
                 <option value="media">Mediální</option>
               </select>
+              <div className="flex items-center gap-1 mt-1">
+                <Input placeholder="URL loga" value={s.logo || ""} onChange={(e) => editSponsor(s.id, { logo: e.target.value })} className="bg-background/40 text-xs h-7" />
+                <input type="file" accept="image/*" onChange={onFile((url) => editSponsor(s.id, { logo: url }))} className="text-[10px] w-24" />
+              </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => remove(s.id, s.name)} className="text-destructive">
               <Trash2 className="h-4 w-4" />

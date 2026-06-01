@@ -21,6 +21,7 @@ type Tab = "overview" | "projects" | "workshops" | "achievements" | "sponsors" |
 function AdminPage() {
   const { authed, user, role, login, logout } = useAuth();
   const [tab, setTab] = useState<Tab>("overview");
+  const [navOpen, setNavOpen] = useState(false);
 
   if (!authed) return <LoginScreen onLogin={login} />;
 
@@ -34,57 +35,87 @@ function AdminPage() {
     { id: "logs", label: "Historie změn", icon: History },
   ];
 
-  return (
-    <div className="min-h-screen grid grid-cols-[260px_1fr]">
-      <aside className="border-r border-border bg-sidebar p-5 flex flex-col">
-        <Link to="/" className="flex items-center gap-2 mb-6">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-cyber shadow-glow">
-            <Rocket className="h-5 w-5 text-primary-foreground" />
-          </span>
-          <div>
-            <div className="font-display font-bold">zitny.eu</div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Mission control</div>
-          </div>
-        </Link>
+  const currentLabel = items.find((i) => i.id === tab)?.label ?? "";
 
-        <div className="glass rounded-lg p-3 mb-6">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Přihlášen</div>
-          <div className="font-display font-bold mt-0.5">{user}</div>
-          <div className="text-xs text-primary">{role}</div>
+  const NavContent = ({ onPick }: { onPick?: () => void }) => (
+    <div className="flex flex-col h-full">
+      <Link to="/" className="flex items-center gap-2 mb-6" onClick={onPick}>
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-cyber shadow-glow">
+          <Rocket className="h-5 w-5 text-primary-foreground" />
+        </span>
+        <div>
+          <div className="font-display font-bold">zitny.eu</div>
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Mission control</div>
         </div>
+      </Link>
 
-        <nav className="flex flex-col gap-1 flex-1">
-          {items.map((it) => {
-            const I = it.icon;
-            const active = tab === it.id;
-            return (
-              <button
-                key={it.id}
-                onClick={() => setTab(it.id)}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-                  active ? "bg-primary/15 text-primary border border-primary/30" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                }`}
-              >
-                <I className="h-4 w-4" />
-                {it.label}
-              </button>
-            );
-          })}
-        </nav>
+      <div className="glass rounded-lg p-3 mb-6">
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Přihlášen</div>
+        <div className="font-display font-bold mt-0.5">{user}</div>
+        <div className="text-xs text-primary">{role}</div>
+      </div>
 
-        <div className="flex flex-col gap-2 pt-4 border-t border-border">
-          <Link to="/">
-            <Button variant="outline" size="sm" className="w-full justify-start">
-              <ExternalLink className="h-4 w-4 mr-2" /> Zobrazit web
-            </Button>
-          </Link>
-          <Button variant="ghost" size="sm" onClick={logout} className="w-full justify-start text-muted-foreground">
-            <LogOut className="h-4 w-4 mr-2" /> Odhlásit
+      <nav className="flex flex-col gap-1 flex-1">
+        {items.map((it) => {
+          const I = it.icon;
+          const active = tab === it.id;
+          return (
+            <button
+              key={it.id}
+              onClick={() => { setTab(it.id); onPick?.(); }}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                active ? "bg-primary/15 text-primary border border-primary/30" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              }`}
+            >
+              <I className="h-4 w-4" />
+              {it.label}
+            </button>
+          );
+        })}
+      </nav>
+
+      <div className="flex flex-col gap-2 pt-4 border-t border-border">
+        <Link to="/" onClick={onPick}>
+          <Button variant="outline" size="sm" className="w-full justify-start">
+            <ExternalLink className="h-4 w-4 mr-2" /> Zobrazit web
           </Button>
+        </Link>
+        <Button variant="ghost" size="sm" onClick={() => { logout(); onPick?.(); }} className="w-full justify-start text-muted-foreground">
+          <LogOut className="h-4 w-4 mr-2" /> Odhlásit
+        </Button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen lg:grid lg:grid-cols-[260px_1fr]">
+      {/* Mobile top bar */}
+      <header className="lg:hidden sticky top-0 z-40 glass border-b border-border flex items-center justify-between px-4 py-3">
+        <Sheet open={navOpen} onOpenChange={setNavOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" aria-label="Menu">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[280px] p-5 bg-sidebar">
+            <NavContent onPick={() => setNavOpen(false)} />
+          </SheetContent>
+        </Sheet>
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-gradient-cyber">
+            <Rocket className="h-4 w-4 text-primary-foreground" />
+          </span>
+          <div className="font-display font-bold text-sm">{currentLabel}</div>
         </div>
+        <div className="text-[10px] uppercase tracking-wider text-primary font-mono">{user}</div>
+      </header>
+
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex border-r border-border bg-sidebar p-5 flex-col">
+        <NavContent />
       </aside>
 
-      <main className="p-8 overflow-auto">
+      <main className="p-4 sm:p-6 lg:p-8 overflow-auto">
         {tab === "overview" && <Overview />}
         {tab === "projects" && <ProjectsAdmin />}
         {tab === "workshops" && <WorkshopsAdmin />}

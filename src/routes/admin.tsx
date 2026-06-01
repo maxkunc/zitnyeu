@@ -433,7 +433,7 @@ function SponsorsAdmin() {
     update((d) => ({ ...d, sponsors: d.sponsors.map((s) => (s.id === id ? { ...s, ...patch } : s)) }));
 
   return (
-    <Section title="Partneři" subtitle="Generální, hlavní a mediální partneři. Můžete nahrát logo (PNG s průhledným pozadím funguje nejlépe).">
+    <Section title="Partneři" subtitle="Generální, hlavní a mediální partneři. Můžete nahrát logo (PNG s průhledným pozadím funguje nejlépe)." onSave={() => log(user!, "Uložil sekci Partneři")}>
       <div className="glass rounded-xl p-5 mb-6 space-y-3">
         <div className="grid md:grid-cols-[1fr_180px_auto] gap-3">
           <Input placeholder="Název partnera" value={name} onChange={(e) => setName(e.target.value)} className="bg-background/40" />

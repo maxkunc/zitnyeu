@@ -10,6 +10,7 @@ import {
   Building2, Inbox, LogOut, Plus, Trash2, ExternalLink, Lock, History, Menu, Save, Check,
 } from "lucide-react";
 import { toast } from "sonner";
+import { handleImageUpload } from "@/lib/image-utils";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — zitny.eu" }] }),
@@ -245,13 +246,7 @@ function ProjectsAdmin() {
     update((d) => ({ ...d, projects: d.projects.map((p) => (p.id === id ? { ...p, ...patch } : p)) }));
   const commitEdit = (title: string) => log(user!, `Upravil projekt „${title}"`);
 
-  const onFile = (cb: (dataUrl: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    const reader = new FileReader();
-    reader.onload = () => cb(String(reader.result));
-    reader.readAsDataURL(f);
-  };
+  const onFile = handleImageUpload;
 
   return (
     <Section title="Projekty" subtitle="Velké projekty, menší výzvy a realizované spolupráce. ESA patronace je vlastnost projektu — zapnutelná pro libovolnou kategorii." onSave={() => log(user!, "Uložil sekci Projekty")}>
@@ -411,13 +406,7 @@ function SponsorsAdmin() {
   const [tier, setTier] = useState<Sponsor["tier"]>("main");
   const [logo, setLogo] = useState("");
 
-  const onFile = (cb: (dataUrl: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    const reader = new FileReader();
-    reader.onload = () => cb(String(reader.result));
-    reader.readAsDataURL(f);
-  };
+  const onFile = handleImageUpload;
 
   const add = () => {
     if (!name.trim()) return;

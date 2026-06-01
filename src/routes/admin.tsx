@@ -254,7 +254,7 @@ function ProjectsAdmin() {
   };
 
   return (
-    <Section title="Projekty" subtitle="Velké projekty, menší výzvy a realizované spolupráce. ESA patronace je vlastnost projektu — zapnutelná pro libovolnou kategorii.">
+    <Section title="Projekty" subtitle="Velké projekty, menší výzvy a realizované spolupráce. ESA patronace je vlastnost projektu — zapnutelná pro libovolnou kategorii." onSave={() => log(user!, "Uložil sekci Projekty")}>
       <div className="glass rounded-xl p-5 mb-6 space-y-3">
         <div className="grid md:grid-cols-2 gap-3">
           <Input placeholder="Název projektu" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} className="bg-background/40" />

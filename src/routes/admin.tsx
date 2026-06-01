@@ -166,12 +166,37 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => boolean }
   );
 }
 
-function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+function Section({ title, subtitle, children, onSave }: { title: string; subtitle?: string; children: React.ReactNode; onSave?: () => void }) {
+  const [saved, setSaved] = useState(false);
+  const handle = () => {
+    onSave?.();
+    setSaved(true);
+    toast.success("Změny uloženy a propsány na web");
+    setTimeout(() => setSaved(false), 1800);
+  };
   return (
     <div>
-      <h2 className="font-display text-2xl sm:text-3xl font-bold">{title}</h2>
-      {subtitle && <p className="text-muted-foreground mt-1 text-sm sm:text-base">{subtitle}</p>}
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold">{title}</h2>
+          {subtitle && <p className="text-muted-foreground mt-1 text-sm sm:text-base">{subtitle}</p>}
+        </div>
+        {onSave && (
+          <Button onClick={handle} className="bg-gradient-cyber text-primary-foreground shadow-glow shrink-0 self-start">
+            {saved ? <Check className="h-4 w-4 mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+            {saved ? "Uloženo" : "Uložit změny"}
+          </Button>
+        )}
+      </div>
       <div className="mt-6 sm:mt-8">{children}</div>
+      {onSave && (
+        <div className="mt-8 flex justify-end">
+          <Button onClick={handle} size="lg" className="bg-gradient-cyber text-primary-foreground shadow-glow">
+            {saved ? <Check className="h-4 w-4 mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+            {saved ? "Uloženo" : "Uložit změny"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

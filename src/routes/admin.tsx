@@ -470,8 +470,8 @@ function SponsorsAdmin() {
 }
 
 function MessagesAdmin() {
-  const { data, update } = useSite();
-  const remove = (id: string) => update((d) => ({ ...d, messages: d.messages.filter((m) => m.id !== id) }));
+  const { data, deleteMessage } = useSite();
+  const remove = (id: string) => deleteMessage(id);
   return (
     <Section title="Příchozí zprávy" subtitle="Zprávy z kontaktního formuláře (přesměrované také na info@zitny.eu)">
       {data.messages.length === 0 ? (

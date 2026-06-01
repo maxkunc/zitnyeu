@@ -4,9 +4,10 @@ import { useAuth, useSite, uid, type Project, type Workshop, type Achievement, t
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Rocket, LayoutDashboard, FolderKanban, GraduationCap, Trophy,
-  Building2, Inbox, LogOut, Plus, Trash2, ExternalLink, Lock, History,
+  Building2, Inbox, LogOut, Plus, Trash2, ExternalLink, Lock, History, Menu,
 } from "lucide-react";
 import { toast } from "sonner";
 

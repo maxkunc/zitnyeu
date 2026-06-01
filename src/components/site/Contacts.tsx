@@ -4,7 +4,7 @@ import { Mail, Phone, Landmark, Rocket, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useSite, uid } from "@/lib/site-store";
+import { useSite } from "@/lib/site-store";
 import { useLang } from "@/lib/i18n";
 import { toast } from "sonner";
 import { z } from "zod";

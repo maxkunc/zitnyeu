@@ -379,7 +379,7 @@ function AchievementsAdmin() {
     update((d) => ({ ...d, achievements: d.achievements.map((a) => (a.id === id ? { ...a, ...patch } : a)) }));
 
   return (
-    <Section title="Úspěchy" subtitle="Klíčová čísla a milníky">
+    <Section title="Úspěchy" subtitle="Klíčová čísla a milníky" onSave={() => log(user!, "Uložil sekci Úspěchy")}>
       <div className="glass rounded-xl p-5 mb-6 grid md:grid-cols-4 gap-3">
         <Input placeholder="Číslo" value={draft.metric} onChange={(e) => setDraft({ ...draft, metric: e.target.value })} className="bg-background/40" />
         <Input placeholder="Popisek" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} className="bg-background/40" />

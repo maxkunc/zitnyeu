@@ -203,7 +203,7 @@ function Section({ title, subtitle, children, onSave }: { title: string; subtitl
 }
 
 function Overview() {
-  const { data } = useSite();
+  const { data, importFromLocalStorage, initialized } = useSite();
   const stats = [
     { l: "Projektů celkem", v: data.projects.length },
     { l: "Velkých", v: data.projects.filter((p) => p.category === "major").length },
@@ -212,8 +212,9 @@ function Overview() {
     { l: "Partnerů", v: data.sponsors.length },
     { l: "Zpráv", v: data.messages.length },
   ];
+  const hasLocal = typeof window !== "undefined" && !!localStorage.getItem("zitny-site-data-v3");
   return (
-    <Section title="Přehled" subtitle="Aktuální stav obsahu webu zitny.eu">
+    <Section title="Přehled" subtitle={initialized ? "Aktuální stav obsahu webu zitny.eu — synchronizováno s cloudem" : "Načítám data z cloudu…"}>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((s) => (
           <div key={s.l} className="glass rounded-xl p-6">
@@ -222,6 +223,19 @@ function Overview() {
           </div>
         ))}
       </div>
+      {hasLocal && (
+        <div className="mt-8 glass rounded-xl p-5 border border-primary/30">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <div className="font-display font-semibold">Lokální data v prohlížeči</div>
+              <p className="text-sm text-muted-foreground mt-1">Před přechodem na cloud jste editovali obsah lokálně. Můžete ho jednorázově nahrát do cloudu (přepíše současný cloud obsah).</p>
+            </div>
+            <Button onClick={importFromLocalStorage} className="bg-gradient-cyber text-primary-foreground shrink-0">
+              Nahrát do cloudu
+            </Button>
+          </div>
+        </div>
+      )}
     </Section>
   );
 }

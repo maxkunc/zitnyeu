@@ -463,8 +463,8 @@ function MessagesAdmin() {
       {data.messages.length === 0 ? (
         <div className="glass rounded-xl p-12 text-center text-muted-foreground">Zatím žádné zprávy.</div>
       ) : (
-        <div className="glass rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="glass rounded-xl overflow-x-auto">
+          <table className="w-full text-sm min-w-[600px]">
             <thead className="bg-secondary/50">
               <tr className="text-left">
                 <th className="px-4 py-3 font-medium">Jméno</th>

@@ -334,7 +334,7 @@ function WorkshopsAdmin() {
     update((d) => ({ ...d, workshops: d.workshops.map((w) => (w.id === id ? { ...w, ...patch } : w)) }));
 
   return (
-    <Section title="Workshopy & Akce" subtitle="Den s Vesmírem, Dům Ronalda McDonalda a další">
+    <Section title="Workshopy & Akce" subtitle="Den s Vesmírem, Dům Ronalda McDonalda a další" onSave={() => log(user!, "Uložil sekci Workshopy")}>
       <div className="glass rounded-xl p-5 mb-6 grid md:grid-cols-2 gap-3">
         <Input placeholder="Název" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} className="bg-background/40" />
         <Input placeholder="Termín" value={draft.date} onChange={(e) => setDraft({ ...draft, date: e.target.value })} className="bg-background/40" />

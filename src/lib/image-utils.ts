@@ -1,44 +1,41 @@
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Načte obrázek z File, zmenší na max rozměr a vrátí komprimovaný dataURL.
- * Brání překročení kvóty localStorage při ukládání obrázků k projektům / partnerům.
+ * Zmenší obrázek na max rozměr a vrátí Blob připravený k uploadu.
+ * SVG necháváme beze změny (vektor).
  */
-export async function fileToCompressedDataUrl(
+async function fileToCompressedBlob(
   file: File,
-  opts: { maxSize?: number; quality?: number; mime?: string } = {}
-): Promise<string> {
-  const { maxSize = 1280, quality = 0.82 } = opts;
-
-  if (!file.type.startsWith("image/")) {
-    throw new Error("Soubor není obrázek");
-  }
-
-  // SVG necháváme jak je (vektor, malý)
+  opts: { maxSize?: number; quality?: number } = {}
+): Promise<{ blob: Blob; ext: string; contentType: string }> {
+  const { maxSize = 1600, quality = 0.85 } = opts;
+  if (!file.type.startsWith("image/")) throw new Error("Soubor není obrázek");
   if (file.type === "image/svg+xml") {
-    return await readAsDataUrl(file);
+    return { blob: file, ext: "svg", contentType: "image/svg+xml" };
   }
 
   const dataUrl = await readAsDataUrl(file);
   const img = await loadImage(dataUrl);
-
   let { width, height } = img;
   if (width > maxSize || height > maxSize) {
     const ratio = Math.min(maxSize / width, maxSize / height);
     width = Math.round(width * ratio);
     height = Math.round(height * ratio);
   }
-
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d");
-  if (!ctx) return dataUrl;
+  if (!ctx) throw new Error("Canvas není dostupný");
   ctx.drawImage(img, 0, 0, width, height);
 
-  // PNG s průhledností zachováme jako PNG, jinak JPEG (menší)
-  const outMime = opts.mime ?? (file.type === "image/png" ? "image/png" : "image/jpeg");
-  return canvas.toDataURL(outMime, quality);
+  const isPng = file.type === "image/png";
+  const mime = isPng ? "image/png" : "image/jpeg";
+  const blob: Blob = await new Promise((resolve, reject) =>
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Komprese selhala"))), mime, quality)
+  );
+  return { blob, ext: isPng ? "png" : "jpg", contentType: mime };
 }
 
 function readAsDataUrl(file: File): Promise<string> {
@@ -59,17 +56,30 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-export function handleImageUpload(cb: (dataUrl: string) => void) {
+/** Nahraje obrázek do storage bucketu `site-images` a vrátí veřejnou URL. */
+export async function uploadImage(file: File): Promise<string> {
+  const { blob, ext, contentType } = await fileToCompressedBlob(file);
+  const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await supabase.storage
+    .from("site-images")
+    .upload(name, blob, { contentType, cacheControl: "31536000", upsert: false });
+  if (error) throw error;
+  const { data } = supabase.storage.from("site-images").getPublicUrl(name);
+  return data.publicUrl;
+}
+
+export function handleImageUpload(cb: (url: string) => void) {
   return async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
+    const t = toast.loading("Nahrávám obrázek…");
     try {
-      const url = await fileToCompressedDataUrl(f);
+      const url = await uploadImage(f);
       cb(url);
-      toast.success("Obrázek nahrán");
+      toast.success("Obrázek nahrán", { id: t });
     } catch (err) {
       console.error(err);
-      toast.error("Nahrání obrázku selhalo");
+      toast.error("Nahrání obrázku selhalo", { id: t });
     } finally {
       e.target.value = "";
     }

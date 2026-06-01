@@ -169,9 +169,9 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => boolean }
 function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="font-display text-3xl font-bold">{title}</h2>
-      {subtitle && <p className="text-muted-foreground mt-1">{subtitle}</p>}
-      <div className="mt-8">{children}</div>
+      <h2 className="font-display text-2xl sm:text-3xl font-bold">{title}</h2>
+      {subtitle && <p className="text-muted-foreground mt-1 text-sm sm:text-base">{subtitle}</p>}
+      <div className="mt-6 sm:mt-8">{children}</div>
     </div>
   );
 }

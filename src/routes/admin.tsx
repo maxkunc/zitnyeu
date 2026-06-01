@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Rocket, LayoutDashboard, FolderKanban, GraduationCap, Trophy,
-  Building2, Inbox, LogOut, Plus, Trash2, ExternalLink, Lock, History, Menu,
+  Building2, Inbox, LogOut, Plus, Trash2, ExternalLink, Lock, History, Menu, Save, Check,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -166,12 +166,37 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => boolean }
   );
 }
 
-function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+function Section({ title, subtitle, children, onSave }: { title: string; subtitle?: string; children: React.ReactNode; onSave?: () => void }) {
+  const [saved, setSaved] = useState(false);
+  const handle = () => {
+    onSave?.();
+    setSaved(true);
+    toast.success("Změny uloženy a propsány na web");
+    setTimeout(() => setSaved(false), 1800);
+  };
   return (
     <div>
-      <h2 className="font-display text-2xl sm:text-3xl font-bold">{title}</h2>
-      {subtitle && <p className="text-muted-foreground mt-1 text-sm sm:text-base">{subtitle}</p>}
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold">{title}</h2>
+          {subtitle && <p className="text-muted-foreground mt-1 text-sm sm:text-base">{subtitle}</p>}
+        </div>
+        {onSave && (
+          <Button onClick={handle} className="bg-gradient-cyber text-primary-foreground shadow-glow shrink-0 self-start">
+            {saved ? <Check className="h-4 w-4 mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+            {saved ? "Uloženo" : "Uložit změny"}
+          </Button>
+        )}
+      </div>
       <div className="mt-6 sm:mt-8">{children}</div>
+      {onSave && (
+        <div className="mt-8 flex justify-end">
+          <Button onClick={handle} size="lg" className="bg-gradient-cyber text-primary-foreground shadow-glow">
+            {saved ? <Check className="h-4 w-4 mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+            {saved ? "Uloženo" : "Uložit změny"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
@@ -229,7 +254,7 @@ function ProjectsAdmin() {
   };
 
   return (
-    <Section title="Projekty" subtitle="Velké projekty, menší výzvy a realizované spolupráce. ESA patronace je vlastnost projektu — zapnutelná pro libovolnou kategorii.">
+    <Section title="Projekty" subtitle="Velké projekty, menší výzvy a realizované spolupráce. ESA patronace je vlastnost projektu — zapnutelná pro libovolnou kategorii." onSave={() => log(user!, "Uložil sekci Projekty")}>
       <div className="glass rounded-xl p-5 mb-6 space-y-3">
         <div className="grid md:grid-cols-2 gap-3">
           <Input placeholder="Název projektu" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} className="bg-background/40" />
@@ -309,7 +334,7 @@ function WorkshopsAdmin() {
     update((d) => ({ ...d, workshops: d.workshops.map((w) => (w.id === id ? { ...w, ...patch } : w)) }));
 
   return (
-    <Section title="Workshopy & Akce" subtitle="Den s Vesmírem, Dům Ronalda McDonalda a další">
+    <Section title="Workshopy & Akce" subtitle="Den s Vesmírem, Dům Ronalda McDonalda a další" onSave={() => log(user!, "Uložil sekci Workshopy")}>
       <div className="glass rounded-xl p-5 mb-6 grid md:grid-cols-2 gap-3">
         <Input placeholder="Název" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} className="bg-background/40" />
         <Input placeholder="Termín" value={draft.date} onChange={(e) => setDraft({ ...draft, date: e.target.value })} className="bg-background/40" />
@@ -354,7 +379,7 @@ function AchievementsAdmin() {
     update((d) => ({ ...d, achievements: d.achievements.map((a) => (a.id === id ? { ...a, ...patch } : a)) }));
 
   return (
-    <Section title="Úspěchy" subtitle="Klíčová čísla a milníky">
+    <Section title="Úspěchy" subtitle="Klíčová čísla a milníky" onSave={() => log(user!, "Uložil sekci Úspěchy")}>
       <div className="glass rounded-xl p-5 mb-6 grid md:grid-cols-4 gap-3">
         <Input placeholder="Číslo" value={draft.metric} onChange={(e) => setDraft({ ...draft, metric: e.target.value })} className="bg-background/40" />
         <Input placeholder="Popisek" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} className="bg-background/40" />
@@ -408,7 +433,7 @@ function SponsorsAdmin() {
     update((d) => ({ ...d, sponsors: d.sponsors.map((s) => (s.id === id ? { ...s, ...patch } : s)) }));
 
   return (
-    <Section title="Partneři" subtitle="Generální, hlavní a mediální partneři. Můžete nahrát logo (PNG s průhledným pozadím funguje nejlépe).">
+    <Section title="Partneři" subtitle="Generální, hlavní a mediální partneři. Můžete nahrát logo (PNG s průhledným pozadím funguje nejlépe)." onSave={() => log(user!, "Uložil sekci Partneři")}>
       <div className="glass rounded-xl p-5 mb-6 space-y-3">
         <div className="grid md:grid-cols-[1fr_180px_auto] gap-3">
           <Input placeholder="Název partnera" value={name} onChange={(e) => setName(e.target.value)} className="bg-background/40" />

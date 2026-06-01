@@ -17,11 +17,11 @@ const schema = z.object({
 
 export function Contacts() {
   const { t } = useLang();
-  const { update } = useSite();
+  const { addMessage } = useSite();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sending, setSending] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const r = schema.safeParse(form);
     if (!r.success) {
@@ -29,22 +29,15 @@ export function Contacts() {
       return;
     }
     setSending(true);
-    update((d) => ({
-      ...d,
-      messages: [
-        { id: uid(), ...r.data, createdAt: new Date().toISOString() },
-        ...d.messages,
-      ],
-    }));
-    // Přesměrování na info@zitny.eu (klientský mailto fallback)
-    const subject = encodeURIComponent(`Web zitny.eu — zpráva od ${r.data.name}`);
-    const body = encodeURIComponent(`${r.data.message}\n\n— ${r.data.name} <${r.data.email}>`);
-    window.location.href = `mailto:info@zitny.eu?subject=${subject}&body=${body}`;
-    setTimeout(() => {
+    const ok = await addMessage(r.data);
+    if (ok) {
+      const subject = encodeURIComponent(`Web zitny.eu — zpráva od ${r.data.name}`);
+      const body = encodeURIComponent(`${r.data.message}\n\n— ${r.data.name} <${r.data.email}>`);
+      window.location.href = `mailto:info@zitny.eu?subject=${subject}&body=${body}`;
       toast.success(t("form_sent"));
       setForm({ name: "", email: "", message: "" });
-      setSending(false);
-    }, 400);
+    }
+    setSending(false);
   };
 
   return (

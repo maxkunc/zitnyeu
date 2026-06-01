@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Rocket, LayoutDashboard, FolderKanban, GraduationCap, Trophy,
-  Building2, Inbox, LogOut, Plus, Trash2, ExternalLink, Lock, History, Menu,
+  Building2, Inbox, LogOut, Plus, Trash2, ExternalLink, Lock, History, Menu, Save, Check,
 } from "lucide-react";
 import { toast } from "sonner";
 

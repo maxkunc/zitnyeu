@@ -187,7 +187,19 @@ function emit() {
 
 function write(next: SiteData) {
   cache = next;
-  if (typeof window !== "undefined") localStorage.setItem(KEY, JSON.stringify(next));
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(next));
+    } catch (err) {
+      console.error("Nepodařilo se uložit data (možná překročená kvóta localStorage):", err);
+      if (typeof window !== "undefined") {
+        // dynamic import aby nevznikl cyklus
+        import("sonner").then(({ toast }) =>
+          toast.error("Úložiště prohlížeče je plné. Zmenšete obrázky nebo odstraňte staré.")
+        );
+      }
+    }
+  }
   emit();
 }
 

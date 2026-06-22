@@ -1,4 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
+import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -133,26 +134,12 @@ async function init() {
     });
     initialized = true;
 
-    // Realtime
+    // Realtime — pouze veřejný site_content (contact_messages už není v publikaci)
     supabase
       .channel("site-sync")
       .on("postgres_changes", { event: "*", schema: "public", table: "site_content" }, (payload: any) => {
         const d = payload.new?.data as Partial<CloudContent> | undefined;
         if (d) setState({ ...state, ...d });
-      })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "contact_messages" }, (payload: any) => {
-        const m = payload.new;
-        if (state.messages.some((x) => x.id === m.id)) return;
-        setState({ ...state, messages: [{ id: m.id, name: m.name, email: m.email, message: m.message, createdAt: m.created_at }, ...state.messages] });
-      })
-      .on("postgres_changes", { event: "DELETE", schema: "public", table: "contact_messages" }, (payload: any) => {
-        const id = payload.old?.id;
-        setState({ ...state, messages: state.messages.filter((m) => m.id !== id) });
-      })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "audit_logs" }, (payload: any) => {
-        const l = payload.new;
-        if (state.logs.some((x) => x.id === l.id)) return;
-        setState({ ...state, logs: [{ id: l.id, who: l.who, action: l.action, at: l.at }, ...state.logs].slice(0, 200) });
       })
       .subscribe();
   } catch (err) {

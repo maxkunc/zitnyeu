@@ -126,7 +126,7 @@ const dict = {
     support_copied: "Zkopírováno do schránky",
     support_perk_1: "Financování studentských vesmírných projektů",
     support_perk_2: "Workshopy a stipendia pro mladé inženýry",
-    support_perk_3: "100 % transparentně — každá koruna pomáhá",
+    support_perk_3: "Celá částka jde vždy zpět do projektů",
   },
   en: {
     nav_home: "Home",

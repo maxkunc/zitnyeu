@@ -214,6 +214,6 @@ const dict = {
     support_copied: "Copied to clipboard",
     support_perk_1: "Funding for student space projects",
     support_perk_2: "Workshops and scholarships for young engineers",
-    support_perk_3: "100% transparent — every koruna helps",
+    support_perk_3: "100% of every donation goes back into our projects",
   },
 } as const;

@@ -20,10 +20,11 @@ export const Route = createFileRoute("/admin")({
 type Tab = "overview" | "projects" | "workshops" | "achievements" | "sponsors" | "messages" | "logs";
 
 function AdminPage() {
-  const { authed, user, role, login, logout } = useAuth();
+  const { authed, ready, user, role, login, logout } = useAuth();
   const [tab, setTab] = useState<Tab>("overview");
   const [navOpen, setNavOpen] = useState(false);
 
+  if (!ready) return <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Načítám…</div>;
   if (!authed) return <LoginScreen onLogin={login} />;
 
   const items: { id: Tab; label: string; icon: typeof Rocket }[] = [
@@ -129,12 +130,16 @@ function AdminPage() {
   );
 }
 
-function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => boolean }) {
+function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => Promise<boolean> }) {
   const [u, setU] = useState("");
   const [p, setP] = useState("");
-  const submit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!onLogin(u, p)) toast.error("Neplatné přihlašovací údaje");
+    setLoading(true);
+    const ok = await onLogin(u, p);
+    setLoading(false);
+    if (!ok) toast.error("Neplatné přihlašovací údaje");
   };
   return (
     <div className="min-h-screen flex items-center justify-center px-6 relative">
@@ -150,14 +155,14 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => boolean }
           </div>
         </div>
         <div className="space-y-3">
-          <Input value={u} onChange={(e) => setU(e.target.value)} placeholder="Uživatel" className="bg-background/40" />
-          <Input value={p} onChange={(e) => setP(e.target.value)} type="password" placeholder="Heslo" className="bg-background/40" />
+          <Input value={u} onChange={(e) => setU(e.target.value)} placeholder="Uživatel (admin / koordinator / editor)" className="bg-background/40" autoComplete="username" />
+          <Input value={p} onChange={(e) => setP(e.target.value)} type="password" placeholder="Heslo" className="bg-background/40" autoComplete="current-password" />
         </div>
-        <Button type="submit" className="w-full mt-6 bg-gradient-cyber text-primary-foreground shadow-glow">
-          Přihlásit se
+        <Button type="submit" disabled={loading} className="w-full mt-6 bg-gradient-cyber text-primary-foreground shadow-glow">
+          {loading ? "Přihlašuji…" : "Přihlásit se"}
         </Button>
         <div className="mt-5 text-[11px] text-muted-foreground font-mono space-y-1 text-center">
-          <div>Demo účty (3):</div>
+          <div>Účty (3):</div>
           <div>admin / esa2026 — Hlavní administrátor</div>
           <div>koordinator / stratos — Koordinátor</div>
           <div>editor / rocket — Editor</div>

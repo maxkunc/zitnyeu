@@ -1,4 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
+import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -108,6 +109,18 @@ const emit = () => listeners.forEach((l) => l());
 const setState = (s: SiteData) => { state = s; emit(); };
 const getSnapshot = () => state;
 
+async function loadAdminData() {
+  const [{ data: msgs }, { data: logs }] = await Promise.all([
+    supabase.from("contact_messages").select("*").order("created_at", { ascending: false }),
+    supabase.from("audit_logs").select("*").order("at", { ascending: false }).limit(200),
+  ]);
+  setState({
+    ...state,
+    messages: (msgs ?? []).map((m: any) => ({ id: m.id, name: m.name, email: m.email, message: m.message, createdAt: m.created_at })),
+    logs: (logs ?? []).map((l: any) => ({ id: l.id, who: l.who, action: l.action, at: l.at })),
+  });
+}
+
 async function init() {
   if (initStarted) return;
   initStarted = true;
@@ -115,46 +128,38 @@ async function init() {
     const { data: row } = await supabase.from("site_content").select("data").eq("id", 1).maybeSingle();
     let content: CloudContent;
     if (!row) {
+      // INSERT je chráněno RLS — proběhne jen pokud je přihlášen admin.
       await supabase.from("site_content").insert({ id: 1, data: defaultContent as any });
       content = defaultContent;
     } else {
       content = { ...defaultContent, ...(row.data as Partial<CloudContent>) };
     }
-
-    const [{ data: msgs }, { data: logs }] = await Promise.all([
-      supabase.from("contact_messages").select("*").order("created_at", { ascending: false }),
-      supabase.from("audit_logs").select("*").order("at", { ascending: false }).limit(200),
-    ]);
-
-    setState({
-      ...content,
-      messages: (msgs ?? []).map((m: any) => ({ id: m.id, name: m.name, email: m.email, message: m.message, createdAt: m.created_at })),
-      logs: (logs ?? []).map((l: any) => ({ id: l.id, who: l.who, action: l.action, at: l.at })),
-    });
+    setState({ ...state, ...content });
     initialized = true;
 
-    // Realtime
+    // Pokud je už přihlášený admin (např. po refreshi), načti admin data
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      try { await loadAdminData(); } catch { /* anon visitor — ignore */ }
+    }
+
+    // Realtime — pouze veřejný site_content (contact_messages už není v publikaci)
     supabase
       .channel("site-sync")
       .on("postgres_changes", { event: "*", schema: "public", table: "site_content" }, (payload: any) => {
         const d = payload.new?.data as Partial<CloudContent> | undefined;
         if (d) setState({ ...state, ...d });
       })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "contact_messages" }, (payload: any) => {
-        const m = payload.new;
-        if (state.messages.some((x) => x.id === m.id)) return;
-        setState({ ...state, messages: [{ id: m.id, name: m.name, email: m.email, message: m.message, createdAt: m.created_at }, ...state.messages] });
-      })
-      .on("postgres_changes", { event: "DELETE", schema: "public", table: "contact_messages" }, (payload: any) => {
-        const id = payload.old?.id;
-        setState({ ...state, messages: state.messages.filter((m) => m.id !== id) });
-      })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "audit_logs" }, (payload: any) => {
-        const l = payload.new;
-        if (state.logs.some((x) => x.id === l.id)) return;
-        setState({ ...state, logs: [{ id: l.id, who: l.who, action: l.action, at: l.at }, ...state.logs].slice(0, 200) });
-      })
       .subscribe();
+
+    // Reaguj na přihlášení/odhlášení — načti/vyprázdni admin data
+    supabase.auth.onAuthStateChange(async (event) => {
+      if (event === "SIGNED_IN") {
+        try { await loadAdminData(); } catch (e) { console.error(e); }
+      } else if (event === "SIGNED_OUT") {
+        setState({ ...state, messages: [], logs: [] });
+      }
+    });
   } catch (err) {
     console.error("Inicializace cloud dat selhala:", err);
     toast.error("Nepodařilo se načíst data z cloudu");
@@ -275,37 +280,51 @@ export function useSite() {
   };
 }
 
-// ---- mock auth (zachováno dle volby uživatele) ----
-const ACCOUNTS: Record<string, { pass: string; role: string }> = {
-  admin: { pass: "esa2026", role: "Hlavní administrátor" },
-  koordinator: { pass: "stratos", role: "Koordinátor projektů" },
-  editor: { pass: "rocket", role: "Editor obsahu" },
+// ---- Supabase Auth (3 admin účty s pevně mapovanými usernames -> e-maily) ----
+const USERNAME_TO_EMAIL: Record<string, { email: string; role: string }> = {
+  admin: { email: "admin@zitny.eu", role: "Hlavní administrátor" },
+  koordinator: { email: "koordinator@zitny.eu", role: "Koordinátor projektů" },
+  editor: { email: "editor@zitny.eu", role: "Editor obsahu" },
 };
+const EMAIL_TO_USERNAME: Record<string, string> = Object.fromEntries(
+  Object.entries(USERNAME_TO_EMAIL).map(([u, v]) => [v.email, u])
+);
 
-const AUTH_KEY = "zitny-admin-auth-v2";
+function deriveUsername(sessionUser: User | null): string | null {
+  if (!sessionUser?.email) return null;
+  return EMAIL_TO_USERNAME[sessionUser.email] ?? sessionUser.email;
+}
 
 export function useAuth() {
-  const [user, setUser] = useState<string | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
-    setUser(localStorage.getItem(AUTH_KEY));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
+    supabase.auth.getSession().then(({ data }) => { setSession(data.session); setReady(true); });
+    return () => sub.subscription.unsubscribe();
   }, []);
+
+  const username = deriveUsername(session?.user ?? null);
+  const role = username ? USERNAME_TO_EMAIL[username]?.role : undefined;
+
   return {
-    user,
-    authed: !!user,
-    role: user ? ACCOUNTS[user]?.role : undefined,
-    accounts: Object.entries(ACCOUNTS).map(([u, v]) => ({ user: u, role: v.role })),
-    login: (u: string, p: string) => {
-      const acc = ACCOUNTS[u.trim()];
-      if (acc && acc.pass === p) {
-        localStorage.setItem(AUTH_KEY, u.trim());
-        setUser(u.trim());
-        return true;
-      }
-      return false;
+    ready,
+    user: username,
+    authed: !!session,
+    role,
+    accounts: Object.entries(USERNAME_TO_EMAIL).map(([u, v]) => ({ user: u, role: v.role })),
+    login: async (u: string, p: string): Promise<boolean> => {
+      const key = u.trim().toLowerCase();
+      const mapped = USERNAME_TO_EMAIL[key];
+      // umožni i přímé zadání e-mailu
+      const email = mapped?.email ?? (key.includes("@") ? key : null);
+      if (!email) return false;
+      const { error } = await supabase.auth.signInWithPassword({ email, password: p });
+      return !error;
     },
-    logout: () => {
-      localStorage.removeItem(AUTH_KEY);
-      setUser(null);
+    logout: async () => {
+      await supabase.auth.signOut();
     },
   };
 }

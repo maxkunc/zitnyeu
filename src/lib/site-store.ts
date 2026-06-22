@@ -280,37 +280,51 @@ export function useSite() {
   };
 }
 
-// ---- mock auth (zachováno dle volby uživatele) ----
-const ACCOUNTS: Record<string, { pass: string; role: string }> = {
-  admin: { pass: "esa2026", role: "Hlavní administrátor" },
-  koordinator: { pass: "stratos", role: "Koordinátor projektů" },
-  editor: { pass: "rocket", role: "Editor obsahu" },
+// ---- Supabase Auth (3 admin účty s pevně mapovanými usernames -> e-maily) ----
+const USERNAME_TO_EMAIL: Record<string, { email: string; role: string }> = {
+  admin: { email: "admin@zitny.eu", role: "Hlavní administrátor" },
+  koordinator: { email: "koordinator@zitny.eu", role: "Koordinátor projektů" },
+  editor: { email: "editor@zitny.eu", role: "Editor obsahu" },
 };
+const EMAIL_TO_USERNAME: Record<string, string> = Object.fromEntries(
+  Object.entries(USERNAME_TO_EMAIL).map(([u, v]) => [v.email, u])
+);
 
-const AUTH_KEY = "zitny-admin-auth-v2";
+function deriveUsername(sessionUser: User | null): string | null {
+  if (!sessionUser?.email) return null;
+  return EMAIL_TO_USERNAME[sessionUser.email] ?? sessionUser.email;
+}
 
 export function useAuth() {
-  const [user, setUser] = useState<string | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
-    setUser(localStorage.getItem(AUTH_KEY));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
+    supabase.auth.getSession().then(({ data }) => { setSession(data.session); setReady(true); });
+    return () => sub.subscription.unsubscribe();
   }, []);
+
+  const username = deriveUsername(session?.user ?? null);
+  const role = username ? USERNAME_TO_EMAIL[username]?.role : undefined;
+
   return {
-    user,
-    authed: !!user,
-    role: user ? ACCOUNTS[user]?.role : undefined,
-    accounts: Object.entries(ACCOUNTS).map(([u, v]) => ({ user: u, role: v.role })),
-    login: (u: string, p: string) => {
-      const acc = ACCOUNTS[u.trim()];
-      if (acc && acc.pass === p) {
-        localStorage.setItem(AUTH_KEY, u.trim());
-        setUser(u.trim());
-        return true;
-      }
-      return false;
+    ready,
+    user: username,
+    authed: !!session,
+    role,
+    accounts: Object.entries(USERNAME_TO_EMAIL).map(([u, v]) => ({ user: u, role: v.role })),
+    login: async (u: string, p: string): Promise<boolean> => {
+      const key = u.trim().toLowerCase();
+      const mapped = USERNAME_TO_EMAIL[key];
+      // umožni i přímé zadání e-mailu
+      const email = mapped?.email ?? (key.includes("@") ? key : null);
+      if (!email) return false;
+      const { error } = await supabase.auth.signInWithPassword({ email, password: p });
+      return !error;
     },
-    logout: () => {
-      localStorage.removeItem(AUTH_KEY);
-      setUser(null);
+    logout: async () => {
+      await supabase.auth.signOut();
     },
   };
 }

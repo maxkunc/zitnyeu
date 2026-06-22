@@ -109,6 +109,18 @@ const emit = () => listeners.forEach((l) => l());
 const setState = (s: SiteData) => { state = s; emit(); };
 const getSnapshot = () => state;
 
+async function loadAdminData() {
+  const [{ data: msgs }, { data: logs }] = await Promise.all([
+    supabase.from("contact_messages").select("*").order("created_at", { ascending: false }),
+    supabase.from("audit_logs").select("*").order("at", { ascending: false }).limit(200),
+  ]);
+  setState({
+    ...state,
+    messages: (msgs ?? []).map((m: any) => ({ id: m.id, name: m.name, email: m.email, message: m.message, createdAt: m.created_at })),
+    logs: (logs ?? []).map((l: any) => ({ id: l.id, who: l.who, action: l.action, at: l.at })),
+  });
+}
+
 async function init() {
   if (initStarted) return;
   initStarted = true;
@@ -116,23 +128,20 @@ async function init() {
     const { data: row } = await supabase.from("site_content").select("data").eq("id", 1).maybeSingle();
     let content: CloudContent;
     if (!row) {
+      // INSERT je chráněno RLS — proběhne jen pokud je přihlášen admin.
       await supabase.from("site_content").insert({ id: 1, data: defaultContent as any });
       content = defaultContent;
     } else {
       content = { ...defaultContent, ...(row.data as Partial<CloudContent>) };
     }
-
-    const [{ data: msgs }, { data: logs }] = await Promise.all([
-      supabase.from("contact_messages").select("*").order("created_at", { ascending: false }),
-      supabase.from("audit_logs").select("*").order("at", { ascending: false }).limit(200),
-    ]);
-
-    setState({
-      ...content,
-      messages: (msgs ?? []).map((m: any) => ({ id: m.id, name: m.name, email: m.email, message: m.message, createdAt: m.created_at })),
-      logs: (logs ?? []).map((l: any) => ({ id: l.id, who: l.who, action: l.action, at: l.at })),
-    });
+    setState({ ...state, ...content });
     initialized = true;
+
+    // Pokud je už přihlášený admin (např. po refreshi), načti admin data
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      try { await loadAdminData(); } catch { /* anon visitor — ignore */ }
+    }
 
     // Realtime — pouze veřejný site_content (contact_messages už není v publikaci)
     supabase
@@ -142,6 +151,15 @@ async function init() {
         if (d) setState({ ...state, ...d });
       })
       .subscribe();
+
+    // Reaguj na přihlášení/odhlášení — načti/vyprázdni admin data
+    supabase.auth.onAuthStateChange(async (event) => {
+      if (event === "SIGNED_IN") {
+        try { await loadAdminData(); } catch (e) { console.error(e); }
+      } else if (event === "SIGNED_OUT") {
+        setState({ ...state, messages: [], logs: [] });
+      }
+    });
   } catch (err) {
     console.error("Inicializace cloud dat selhala:", err);
     toast.error("Nepodařilo se načíst data z cloudu");

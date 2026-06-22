@@ -112,6 +112,21 @@ const dict = {
     form_sent: "Zpráva odeslána. Brzy se ozveme.",
     form_invalid: "Vyplňte prosím všechna pole správně.",
     footer_tagline: "Cesta k hvězdám.",
+
+    support_label: "Podpořte misi",
+    support_title_a: "Pomozte nám dosáhnout",
+    support_title_b: "hvězd.",
+    support_desc:
+      "Každý příspěvek pohání naše satelity, stratosférické mise a vzdělávací programy pro mladé. Díky vám létáme dál.",
+    support_pick_amount: "Vyberte částku",
+    support_custom: "Vlastní částka",
+    support_account: "Bankovní účet",
+    support_cta: "Zkopírovat číslo účtu",
+    support_qr_title: "Naskenujte a podpořte",
+    support_copied: "Zkopírováno do schránky",
+    support_perk_1: "Financování studentských vesmírných projektů",
+    support_perk_2: "Workshopy a stipendia pro mladé inženýry",
+    support_perk_3: "100 % transparentně — každá koruna pomáhá",
   },
   en: {
     nav_home: "Home",
@@ -185,5 +200,20 @@ const dict = {
     form_sent: "Message sent. We'll get back to you soon.",
     form_invalid: "Please fill in all fields correctly.",
     footer_tagline: "Path to the stars.",
+
+    support_label: "Support the mission",
+    support_title_a: "Help us reach",
+    support_title_b: "the stars.",
+    support_desc:
+      "Every contribution powers our satellites, stratospheric missions and educational programs for young people. Thanks to you, we fly further.",
+    support_pick_amount: "Pick an amount",
+    support_custom: "Custom amount",
+    support_account: "Bank account",
+    support_cta: "Copy account number",
+    support_qr_title: "Scan & support",
+    support_copied: "Copied to clipboard",
+    support_perk_1: "Funding for student space projects",
+    support_perk_2: "Workshops and scholarships for young engineers",
+    support_perk_3: "100% transparent — every koruna helps",
   },
 } as const;

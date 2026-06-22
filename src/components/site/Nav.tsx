@@ -22,6 +22,7 @@ export function Nav() {
     { href: "#projekty", label: t("nav_projects") },
     { href: "#workshopy", label: t("nav_workshops") },
     { href: "#sponzori", label: t("nav_sponsors") },
+    { href: "#prispet", label: t("support_label") },
     { href: "#kontakty", label: t("nav_contacts") },
   ];
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SectionLabel } from "./About";
-import { Mail, Phone, Landmark, Rocket, Send } from "lucide-react";
+import { Mail, Phone, Rocket, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -53,18 +53,6 @@ export function Contacts() {
           <div className="space-y-5">
             <ContactRow icon={<Mail />} label={t("contact_email")} value="info@zitny.eu" href="mailto:info@zitny.eu" />
             <ContactRow icon={<Phone />} label={t("contact_phone")} value="+420 733 721 205" href="tel:+420733721205" />
-            <div className="glass rounded-2xl p-6">
-              <div className="flex items-center gap-4">
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-cyber text-primary-foreground shadow-glow">
-                  <Landmark className="h-5 w-5" />
-                </span>
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground">{t("contact_account")}</div>
-                  <div className="font-display text-lg font-semibold font-mono tracking-wider">97295342 / 5500</div>
-                </div>
-              </div>
-              <p className="mt-4 text-sm text-muted-foreground">{t("contact_account_note")}</p>
-            </div>
           </div>
 
           <form onSubmit={submit} className="glass rounded-2xl p-6 md:p-8 shadow-card space-y-4">

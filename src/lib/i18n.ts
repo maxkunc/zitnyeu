@@ -49,12 +49,12 @@ const dict = {
     nav_sponsors: "Partneři",
     nav_contacts: "Kontakty",
 
-    hero_badge: "Pod patronací Evropské vesmírné agentury",
+    hero_badge: "Pod patronací Evropské vesmírné agentury ESA",
     hero_title_1: "Budujeme cestu mladých",
     hero_title_2: "k",
-    hero_title_3: "hvězdám",
+    hero_title_3: "jejich snům",
     hero_desc:
-      "zitny.eu je tým mladých inženýrů, vědců a snílků. Realizujeme vesmírné projekty, létáme do stratosféry a inspirujeme další generaci skrze workshopy a přednášky.",
+      "Jsme tým mladých inženýrů, vědců a snílků. Realizujeme vesmírné projekty, létáme do vzduchu a inspirujeme další generaci skrze workshopy a přednášky.",
     hero_cta_projects: "Naše projekty",
     hero_cta_contact: "Kontaktujte nás",
     stat_missions: "Misí",

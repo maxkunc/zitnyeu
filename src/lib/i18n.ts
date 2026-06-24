@@ -69,11 +69,11 @@ const dict = {
     label_partners: "Partneři",
     label_contacts: "Kontakty",
 
-    achievements_title_a: "Čísla, která nás",
-    achievements_title_b: "posouvají",
+    achievements_title_a: "Fakty, které nás",
+    achievements_title_b: "posouvají dál.",
 
-    projects_title_a: "Od stratosféry až po",
-    projects_title_b: "oběžnou dráhu",
+    projects_title_a: "Od hydrantů až po",
+    projects_title_b: "vesmírné stanice.",
     projects_major: "Velké projekty",
     projects_minor: "Menší projekty & výzvy",
     projects_done: "Realizované spolupráce",

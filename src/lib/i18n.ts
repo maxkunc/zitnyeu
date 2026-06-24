@@ -70,10 +70,10 @@ const dict = {
     label_contacts: "Kontakty",
 
     achievements_title_a: "Fakty, které nás",
-    achievements_title_b: "posouvají dál.",
+    achievements_title_b: "posouvají dál",
 
     projects_title_a: "Od hydrantů až po",
-    projects_title_b: "vesmírné stanice.",
+    projects_title_b: "vesmírné stanice",
     projects_major: "Velké projekty",
     projects_minor: "Menší projekty & výzvy",
     projects_done: "Realizované spolupráce",

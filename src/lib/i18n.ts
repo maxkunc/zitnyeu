@@ -51,7 +51,7 @@ const dict = {
 
     hero_badge: "Pod patronací Evropské vesmírné agentury ESA",
     hero_title_1: "Budujeme cestu mladých",
-    hero_title_2: "k",
+    hero_title_2: "k\u00a0",
     hero_title_3: "jejich snům",
     hero_desc:
       "Jsme tým mladých inženýrů, vědců a snílků. Realizujeme vesmírné projekty, létáme do vzduchu a inspirujeme další generaci skrze workshopy a přednášky.",

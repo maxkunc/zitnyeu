@@ -11,13 +11,13 @@ export function About() {
   const cards = lang === "en"
     ? [
         { i: 0, t: "Drone platforms", d: "Custom drones for monitoring and mapping." },
-        { i: 1, t: "Astronomy", d: "Observation, data, open science." },
+        { i: 1, t: "Geology", d: "Observation, data, open science." },
         { i: 2, t: "Embedded HW", d: "In-house onboard electronics." },
         { i: 3, t: "Education", d: "Workshops for schools and the public." },
       ]
     : [
         { i: 0, t: "Dronové platformy", d: "Vlastní drony pro monitoring a mapování." },
-        { i: 1, t: "Astronomie", d: "Pozorování, data, otevřená věda." },
+        { i: 1, t: "Geologie", d: "Pozorování, data, otevřená věda." },
         { i: 2, t: "Embedded HW", d: "Vlastní palubní elektronika." },
         { i: 3, t: "Vzdělávání", d: "Workshopy pro školy i veřejnost." },
       ];

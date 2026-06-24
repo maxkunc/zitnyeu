@@ -49,12 +49,12 @@ const dict = {
     nav_sponsors: "Partneři",
     nav_contacts: "Kontakty",
 
-    hero_badge: "Pod patronací Evropské vesmírné agentury",
+    hero_badge: "Pod patronací Evropské vesmírné agentury ESA",
     hero_title_1: "Budujeme cestu mladých",
-    hero_title_2: "k",
-    hero_title_3: "hvězdám",
+    hero_title_2: "k\u00a0",
+    hero_title_3: "jejich snům",
     hero_desc:
-      "zitny.eu je tým mladých inženýrů, vědců a snílků. Realizujeme vesmírné projekty, létáme do stratosféry a inspirujeme další generaci skrze workshopy a přednášky.",
+      "Jsme tým mladých inženýrů, vědců a snílků. Realizujeme vesmírné projekty, létáme do vzduchu a inspirujeme další generaci skrze workshopy a přednášky.",
     hero_cta_projects: "Naše projekty",
     hero_cta_contact: "Kontaktujte nás",
     stat_missions: "Misí",
@@ -69,11 +69,11 @@ const dict = {
     label_partners: "Partneři",
     label_contacts: "Kontakty",
 
-    achievements_title_a: "Čísla, která nás",
-    achievements_title_b: "posouvají",
+    achievements_title_a: "Fakty, které nás",
+    achievements_title_b: "posouvají dál",
 
-    projects_title_a: "Od stratosféry až po",
-    projects_title_b: "oběžnou dráhu",
+    projects_title_a: "Od hydrantů až po",
+    projects_title_b: "vesmírné stanice",
     projects_major: "Velké projekty",
     projects_minor: "Menší projekty & výzvy",
     projects_done: "Realizované spolupráce",
@@ -96,10 +96,10 @@ const dict = {
       "Hledáme generální, hlavní i mediální partnery. Připojte se k misi, která inspiruje další generaci.",
     sponsors_cta_btn: "Stát se partnerem",
 
-    contacts_title_a: "Pojďme spolu",
-    contacts_title_b: "startovat",
+    contacts_title_a: "Pojďme se",
+    contacts_title_b: "spojit",
     contacts_desc:
-      "Máte zájem o workshop, spolupráci nebo se chcete na něco zeptat? Napište nám — všechny zprávy chodí na info@zitny.eu.",
+      "Máte zájem o workshop, spolupráci nebo se chcete na něco zeptat? Napište nám!",
     contact_email: "E-mail",
     contact_phone: "Telefon",
     contact_account: "Bankovní účet",
@@ -113,11 +113,11 @@ const dict = {
     form_invalid: "Vyplňte prosím všechna pole správně.",
     footer_tagline: "Cesta k hvězdám.",
 
-    support_label: "Podpořte misi",
+    support_label: "Podpořte nás",
     support_title_a: "Pomozte nám dosáhnout",
-    support_title_b: "hvězd.",
+    support_title_b: "cílů.",
     support_desc:
-      "Každý příspěvek pohání naše satelity, stratosférické mise a vzdělávací programy pro mladé. Díky vám létáme dál.",
+      "Každý příspěvek pohání naše projekty, vzdušné mise a vzdělávací programy pro mladé. Díky vám létáme dál.",
     support_pick_amount: "Vyberte částku",
     support_custom: "Vlastní částka",
     support_account: "Bankovní účet",

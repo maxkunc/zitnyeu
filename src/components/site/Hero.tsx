@@ -21,7 +21,7 @@ export function Hero() {
 
         <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] max-w-5xl">
           {t("hero_title_1")}<br />
-          {t("hero_title_2")} <span className="text-gradient-cyber">{t("hero_title_3")}</span>.
+          {t("hero_title_2")}<span className="text-gradient-cyber">{t("hero_title_3")}</span>.
         </h1>
 
         <p className="mt-8 max-w-2xl text-lg text-muted-foreground leading-relaxed">{t("hero_desc")}</p>

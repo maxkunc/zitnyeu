@@ -96,10 +96,10 @@ const dict = {
       "Hledáme generální, hlavní i mediální partnery. Připojte se k misi, která inspiruje další generaci.",
     sponsors_cta_btn: "Stát se partnerem",
 
-    contacts_title_a: "Pojďme spolu",
-    contacts_title_b: "startovat",
+    contacts_title_a: "Pojďme se",
+    contacts_title_b: "spojit",
     contacts_desc:
-      "Máte zájem o workshop, spolupráci nebo se chcete na něco zeptat? Napište nám — všechny zprávy chodí na info@zitny.eu.",
+      "Máte zájem o workshop, spolupráci nebo se chcete na něco zeptat? Napište nám!",
     contact_email: "E-mail",
     contact_phone: "Telefon",
     contact_account: "Bankovní účet",

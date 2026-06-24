@@ -6,7 +6,7 @@ import { useLang } from "@/lib/i18n";
 import { toast } from "sonner";
 
 const ACCOUNT = "97295342/5500";
-const IBAN = "CZ8255000000000097295342";
+const IBAN = "CZ6755000000000097295342";
 
 const AMOUNTS = [200, 500, 1000, 2500];
 

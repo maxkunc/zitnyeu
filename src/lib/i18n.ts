@@ -113,11 +113,11 @@ const dict = {
     form_invalid: "Vyplňte prosím všechna pole správně.",
     footer_tagline: "Cesta k hvězdám.",
 
-    support_label: "Podpořte misi",
+    support_label: "Podpořte nás",
     support_title_a: "Pomozte nám dosáhnout",
-    support_title_b: "hvězd.",
+    support_title_b: "cílů.",
     support_desc:
-      "Každý příspěvek pohání naše satelity, stratosférické mise a vzdělávací programy pro mladé. Díky vám létáme dál.",
+      "Každý příspěvek pohání naše projekty, vzdušné mise a vzdělávací programy pro mladé. Díky vám létáme dál.",
     support_pick_amount: "Vyberte částku",
     support_custom: "Vlastní částka",
     support_account: "Bankovní účet",

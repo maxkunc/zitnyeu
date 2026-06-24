@@ -67,7 +67,7 @@ export type SiteData = CloudContent & {
 const defaultContent: CloudContent = {
   about: {
     heading: "Mladí inženýři s pohledem k hvězdám",
-    body: "Jsme nezisková iniciativa mladých nadšenců, kteří propojují vesmírné technologie, vědu a vzdělávání. Realizujeme projekty pod patronací Evropské vesmírné agentury, organizujeme workshopy pro školy a spolupracujeme s veřejnými i bezpečnostními složkami.",
+    body: "Jsme nezisková iniciativa mladých nadšenců, kteří propojují vesmírné technologie, vědu a vzdělávání. Realizujeme projekty pod patronací Evropské vesmírné agentury ESA, organizujeme workshopy pro školy a spolupracujeme s veřejnými i bezpečnostními složkami.",
   },
   achievements: [
     { id: "a1", metric: "2×", label: "Ocenění AirVision", description: "Mezinárodní ekologický summit" },

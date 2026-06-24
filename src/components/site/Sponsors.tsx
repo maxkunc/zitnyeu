@@ -36,9 +36,9 @@ export function Sponsors() {
         <div className="flex gap-6 animate-marquee w-max">
           {doubled.map((s, i) => (
             <div key={`${s.id}-${i}`} className="glass rounded-xl px-8 py-5 min-w-[220px] flex items-center gap-4">
-              <div className="h-14 w-14 shrink-0 rounded-md bg-white/5 border border-border flex items-center justify-center overflow-hidden">
+              <div className="h-16 w-16 aspect-square shrink-0 rounded-2xl bg-white/5 overflow-hidden flex items-center justify-center">
                 {s.logo ? (
-                  <img src={s.logo} alt={s.name} className="h-full w-full object-contain p-1" />
+                  <img src={s.logo} alt={s.name} className="h-full w-full object-cover" />
                 ) : (
                   <span className="font-display text-lg font-bold text-muted-foreground">{s.name.slice(0, 2).toUpperCase()}</span>
                 )}

@@ -155,18 +155,12 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => Promise<b
           </div>
         </div>
         <div className="space-y-3">
-          <Input value={u} onChange={(e) => setU(e.target.value)} placeholder="Uživatel (admin / koordinator / editor)" className="bg-background/40" autoComplete="username" />
+          <Input value={u} onChange={(e) => setU(e.target.value)} placeholder="Uživatel" className="bg-background/40" autoComplete="username" />
           <Input value={p} onChange={(e) => setP(e.target.value)} type="password" placeholder="Heslo" className="bg-background/40" autoComplete="current-password" />
         </div>
         <Button type="submit" disabled={loading} className="w-full mt-6 bg-gradient-cyber text-primary-foreground shadow-glow">
           {loading ? "Přihlašuji…" : "Přihlásit se"}
         </Button>
-        <div className="mt-5 text-[11px] text-muted-foreground font-mono space-y-1 text-center">
-          <div>Účty (3):</div>
-          <div>admin / esa2026 — Hlavní administrátor</div>
-          <div>koordinator / stratos — Koordinátor</div>
-          <div>editor / rocket — Editor</div>
-        </div>
       </form>
     </div>
   );

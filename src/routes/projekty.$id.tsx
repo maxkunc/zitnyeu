@@ -20,7 +20,7 @@ export default function ProjectDetail() {
       <div className="min-h-screen grid place-items-center px-6">
         <div className="text-center">
           <p className="font-mono text-sm text-muted-foreground">Projekt nenalezen.</p>
-          <Link to="/" hash="projekty" className="mt-4 inline-flex items-center gap-2 text-primary hover:underline">
+          <Link to="/#projekty" className="mt-4 inline-flex items-center gap-2 text-primary hover:underline">
             <ArrowLeft className="h-4 w-4" /> Zpět na projekty
           </Link>
         </div>
@@ -41,7 +41,7 @@ export default function ProjectDetail() {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         <div className="absolute top-6 left-6">
-          <Link to="/" hash="projekty" className="inline-flex items-center gap-2 rounded-full bg-background/70 backdrop-blur px-4 py-2 text-sm font-mono hover:bg-background transition-colors">
+          <Link to="/#projekty" className="inline-flex items-center gap-2 rounded-full bg-background/70 backdrop-blur px-4 py-2 text-sm font-mono hover:bg-background transition-colors">
             <ArrowLeft className="h-4 w-4" /> Zpět
           </Link>
         </div>

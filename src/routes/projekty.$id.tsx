@@ -1,21 +1,16 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { Link, useParams } from "react-router-dom";
+import { useEffect } from "react";
 import { useSite } from "@/lib/site-store";
 import { ArrowLeft, Award } from "lucide-react";
 
-export const Route = createFileRoute("/projekty/$id")({
-  component: ProjectDetail,
-  head: ({ params }) => ({
-    meta: [
-      { title: `Projekt — ${params.id}` },
-      { name: "description", content: "Detail projektu Žitný EU." },
-    ],
-  }),
-});
-
-function ProjectDetail() {
-  const { id } = Route.useParams();
+export default function ProjectDetail() {
+  const { id = "" } = useParams();
   const { data, initialized } = useSite();
   const project = data.projects.find((p) => p.id === id);
+
+  useEffect(() => {
+    document.title = project ? `${project.title} — zitny.eu` : "Projekt — zitny.eu";
+  }, [project]);
 
   if (!project) {
     if (!initialized) {

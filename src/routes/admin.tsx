@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth, useSite, uid, type Project, type Workshop, type Achievement, type Sponsor } from "@/lib/site-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,10 +12,10 @@ import {
 import { toast } from "sonner";
 import { handleImageUpload } from "@/lib/image-utils";
 
-export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Admin — zitny.eu" }] }),
-  component: AdminPage,
-});
+export default function AdminRoute() {
+  useEffect(() => { document.title = "Admin — zitny.eu"; }, []);
+  return <AdminPage />;
+}
 
 type Tab = "overview" | "projects" | "workshops" | "achievements" | "sponsors" | "messages" | "logs";
 

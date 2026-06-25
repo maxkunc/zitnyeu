@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Nav } from "@/components/site/Nav";
 import { Hero } from "@/components/site/Hero";
 import { About } from "@/components/site/About";
@@ -9,19 +9,10 @@ import { Sponsors } from "@/components/site/Sponsors";
 import { Support } from "@/components/site/Support";
 import { Contacts } from "@/components/site/Contacts";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "zitny.eu — Mladí inženýři s pohledem k hvězdám" },
-      { name: "description", content: "Nezisková organizace vyvíjející vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA." },
-      { property: "og:title", content: "zitny.eu — Vesmírné projekty pro mladé" },
-      { property: "og:description", content: "Projekty, workshopy a mise pod patronací ESA." },
-    ],
-  }),
-  component: Index,
-});
-
-function Index() {
+export default function IndexPage() {
+  useEffect(() => {
+    document.title = "zitny.eu — Mladí inženýři s pohledem k hvězdám";
+  }, []);
   return (
     <main className="relative">
       <Nav />

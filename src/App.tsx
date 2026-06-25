@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import IndexPage from "@/pages/Index";
-import AdminPage from "@/pages/Admin";
-import ProjectDetailPage from "@/pages/ProjectDetail";
+import AdminPage from "@/routes/admin";
+import ProjectDetailPage from "@/routes/projekty.$id";
 import NotFoundPage from "@/pages/NotFound";
 
 export default function App() {

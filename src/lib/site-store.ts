@@ -143,14 +143,17 @@ async function init() {
       try { await loadAdminData(); } catch { /* anon visitor — ignore */ }
     }
 
-    // Realtime — pouze veřejný site_content (contact_messages už není v publikaci)
-    supabase
-      .channel("site-sync")
-      .on("postgres_changes", { event: "*", schema: "public", table: "site_content" }, (payload: any) => {
-        const d = payload.new?.data as Partial<CloudContent> | undefined;
-        if (d) setState({ ...state, ...d });
-      })
-      .subscribe();
+    // Lehká periodická synchronizace veřejného obsahu (postgres_changes byl
+    // odpojen, aby se obsah nevysílal anonymním Realtime odběratelům).
+    if (typeof window !== "undefined") {
+      window.setInterval(async () => {
+        try {
+          const { data: row } = await supabase.from("site_content").select("data").eq("id", 1).maybeSingle();
+          const d = (row?.data as Partial<CloudContent> | undefined);
+          if (d) setState({ ...state, ...d });
+        } catch { /* ignore */ }
+      }, 30000);
+    }
 
     // Reaguj na přihlášení/odhlášení — načti/vyprázdni admin data
     supabase.auth.onAuthStateChange(async (event) => {

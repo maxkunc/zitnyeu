@@ -67,20 +67,9 @@ export function Sponsors() {
               <div key={`${s.id}-${i}`}>{card}</div>
             );
           })}
-              <div className="text-left">
-                {s.tier && (
-                  <span className="block text-[10px] font-mono uppercase tracking-wider text-primary">
-                    {tiers[s.tier]}
-                  </span>
-                )}
-                <span className="font-display text-sm font-bold tracking-wide text-foreground">
-                  {s.name}
-                </span>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
+
 
       <div className="mx-auto max-w-7xl px-6 mt-16">
         <div className="relative overflow-hidden rounded-3xl glass border-primary/40 p-8 md:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">

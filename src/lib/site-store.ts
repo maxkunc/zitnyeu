@@ -91,11 +91,12 @@ const defaultContent: CloudContent = {
     { id: "w2", title: "Pohodový den pro Dům Ronalda McDonalda", description: "Plánovaný charitativní program pro děti a rodiny v Domě Ronalda McDonalda — pouštění raket, astronomické pozorování a tvořivé dílny.", date: "Plánováno" },
   ],
   sponsors: [
-    { id: "s1", name: "ESA", tier: "general" },
-    { id: "s2", name: "HZS Středočeského kraje", tier: "main" },
-    { id: "s3", name: "JSDH Řevnice", tier: "main" },
-    { id: "s4", name: "AstroPi", tier: "media" },
-    { id: "s5", name: "MoonCamp", tier: "media" },
+    { id: "s1", name: "ESA", tier: "general", domain: "esa.int", url: "https://www.esa.int" },
+    { id: "s2", name: "HZS Středočeského kraje", tier: "main", domain: "hzscr.cz", url: "https://www.hzscr.cz" },
+    { id: "s3", name: "JSDH Řevnice", tier: "main", domain: "revnice.cz", url: "https://www.revnice.cz" },
+    { id: "s4", name: "AstroPi", tier: "media", domain: "astro-pi.org", url: "https://astro-pi.org" },
+    { id: "s5", name: "MoonCamp", tier: "media", domain: "mooncampchallenge.org", url: "https://mooncampchallenge.org" },
+    { id: "s6", name: "Pizzzza.cz", tier: "main", domain: "pizzzza.cz", url: "https://pizzzza.cz" },
   ],
 };
 

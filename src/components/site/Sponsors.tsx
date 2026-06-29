@@ -34,29 +34,42 @@ export function Sponsors() {
         <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
         <div className="flex gap-6 animate-marquee w-max">
-          {doubled.map((s, i) => (
-            <div key={`${s.id}-${i}`} className="glass rounded-xl px-8 py-5 min-w-[220px] flex items-center gap-4">
-              <div className="h-16 w-16 aspect-square shrink-0 rounded-2xl bg-white/5 overflow-hidden flex items-center justify-center">
-                {s.logo ? (
-                  <img src={s.logo} alt={s.name} className="h-full w-full object-cover" />
-                ) : (
-                  <span className="font-display text-lg font-bold text-muted-foreground">{s.name.slice(0, 2).toUpperCase()}</span>
-                )}
-              </div>
-              <div className="text-left">
-                {s.tier && (
-                  <span className="block text-[10px] font-mono uppercase tracking-wider text-primary">
-                    {tiers[s.tier]}
+          {doubled.map((s, i) => {
+            const logoDevKey = import.meta.env.VITE_LOVABLE_CONNECTOR_LOGO_DEV_API_KEY;
+            const fallbackLogo = s.domain && logoDevKey
+              ? `https://img.logo.dev/${s.domain}?token=${logoDevKey}&size=200&format=png&retina=true`
+              : null;
+            const src = s.logo || fallbackLogo;
+            const card = (
+              <div className="glass rounded-xl px-8 py-5 min-w-[220px] flex items-center gap-4 hover:border-primary/40 transition-colors">
+                <div className="h-16 w-16 aspect-square shrink-0 rounded-2xl bg-white overflow-hidden flex items-center justify-center">
+                  {src ? (
+                    <img src={src} alt={s.name} className="h-full w-full object-cover" loading="lazy" />
+                  ) : (
+                    <span className="font-display text-lg font-bold text-muted-foreground">{s.name.slice(0, 2).toUpperCase()}</span>
+                  )}
+                </div>
+                <div className="text-left">
+                  {s.tier && (
+                    <span className="block text-[10px] font-mono uppercase tracking-wider text-primary">
+                      {tiers[s.tier]}
+                    </span>
+                  )}
+                  <span className="font-display text-sm font-bold tracking-wide text-foreground">
+                    {s.name}
                   </span>
-                )}
-                <span className="font-display text-sm font-bold tracking-wide text-foreground">
-                  {s.name}
-                </span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+            return s.url ? (
+              <a key={`${s.id}-${i}`} href={s.url} target="_blank" rel="noopener noreferrer">{card}</a>
+            ) : (
+              <div key={`${s.id}-${i}`}>{card}</div>
+            );
+          })}
         </div>
       </div>
+
 
       <div className="mx-auto max-w-7xl px-6 mt-16">
         <div className="relative overflow-hidden rounded-3xl glass border-primary/40 p-8 md:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">

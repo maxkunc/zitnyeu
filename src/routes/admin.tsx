@@ -418,14 +418,15 @@ function SponsorsAdmin() {
   const [name, setName] = useState("");
   const [tier, setTier] = useState<Sponsor["tier"]>("main");
   const [logo, setLogo] = useState("");
+  const [domain, setDomain] = useState("");
 
   const onFile = handleImageUpload;
 
   const add = () => {
     if (!name.trim()) return;
-    update((d) => ({ ...d, sponsors: [...d.sponsors, { id: uid(), name, tier, logo } as Sponsor] }));
+    update((d) => ({ ...d, sponsors: [...d.sponsors, { id: uid(), name, tier, logo, domain: domain.trim() || undefined } as Sponsor] }));
     log(user!, `Přidal partnera „${name}"`);
-    setName(""); setLogo("");
+    setName(""); setLogo(""); setDomain("");
   };
   const remove = (id: string, n: string) => {
     update((d) => ({ ...d, sponsors: d.sponsors.filter((s) => s.id !== id) }));
@@ -453,6 +454,7 @@ function SponsorsAdmin() {
           <input type="file" accept="image/*" onChange={onFile(setLogo)} className="text-xs" />
           {logo && <img src={logo} alt="" className="h-10 w-10 object-contain bg-white/5 rounded" />}
         </div>
+        <Input placeholder="Doména pro logo.dev (např. esa.int) — automaticky stáhne logo" value={domain} onChange={(e) => setDomain(e.target.value)} className="bg-background/40" />
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {data.sponsors.map((s) => (
@@ -471,6 +473,7 @@ function SponsorsAdmin() {
                 <Input placeholder="URL loga" value={s.logo || ""} onChange={(e) => editSponsor(s.id, { logo: e.target.value })} className="bg-background/40 text-xs h-7" />
                 <input type="file" accept="image/*" onChange={onFile((url) => editSponsor(s.id, { logo: url }))} className="text-[10px] w-24" />
               </div>
+              <Input placeholder="doména (logo.dev)" value={s.domain || ""} onChange={(e) => editSponsor(s.id, { domain: e.target.value })} className="bg-background/40 text-xs h-7 mt-1" />
             </div>
             <Button variant="ghost" size="icon" onClick={() => remove(s.id, s.name)} className="text-destructive">
               <Trash2 className="h-4 w-4" />

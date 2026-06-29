@@ -473,6 +473,7 @@ function SponsorsAdmin() {
                 <Input placeholder="URL loga" value={s.logo || ""} onChange={(e) => editSponsor(s.id, { logo: e.target.value })} className="bg-background/40 text-xs h-7" />
                 <input type="file" accept="image/*" onChange={onFile((url) => editSponsor(s.id, { logo: url }))} className="text-[10px] w-24" />
               </div>
+              <Input placeholder="doména (logo.dev)" value={s.domain || ""} onChange={(e) => editSponsor(s.id, { domain: e.target.value })} className="bg-background/40 text-xs h-7 mt-1" />
             </div>
             <Button variant="ghost" size="icon" onClick={() => remove(s.id, s.name)} className="text-destructive">
               <Trash2 className="h-4 w-4" />

@@ -418,14 +418,15 @@ function SponsorsAdmin() {
   const [name, setName] = useState("");
   const [tier, setTier] = useState<Sponsor["tier"]>("main");
   const [logo, setLogo] = useState("");
+  const [domain, setDomain] = useState("");
 
   const onFile = handleImageUpload;
 
   const add = () => {
     if (!name.trim()) return;
-    update((d) => ({ ...d, sponsors: [...d.sponsors, { id: uid(), name, tier, logo } as Sponsor] }));
+    update((d) => ({ ...d, sponsors: [...d.sponsors, { id: uid(), name, tier, logo, domain: domain.trim() || undefined } as Sponsor] }));
     log(user!, `Přidal partnera „${name}"`);
-    setName(""); setLogo("");
+    setName(""); setLogo(""); setDomain("");
   };
   const remove = (id: string, n: string) => {
     update((d) => ({ ...d, sponsors: d.sponsors.filter((s) => s.id !== id) }));

@@ -454,6 +454,7 @@ function SponsorsAdmin() {
           <input type="file" accept="image/*" onChange={onFile(setLogo)} className="text-xs" />
           {logo && <img src={logo} alt="" className="h-10 w-10 object-contain bg-white/5 rounded" />}
         </div>
+        <Input placeholder="Doména pro logo.dev (např. esa.int) — automaticky stáhne logo" value={domain} onChange={(e) => setDomain(e.target.value)} className="bg-background/40" />
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {data.sponsors.map((s) => (

@@ -33,6 +33,7 @@ export type Sponsor = {
   tier?: "general" | "main" | "media";
   url?: string;
   logo?: string;
+  domain?: string;
 };
 
 export type Message = {

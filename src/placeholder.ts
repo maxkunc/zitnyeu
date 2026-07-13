@@ -1,2 +1,2 @@
-// Placeholder pro TypeScript checker. Aplikace je pure HTML/CSS/JS.
+// Placeholder — aplikace je čistě HTML/CSS/JS v /public.
 export {};

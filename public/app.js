@@ -186,8 +186,13 @@
     });
   }
 
-  /* ---- Reveal on scroll ---- */
+  /* ---- Reveal on scroll (with safety fallback) ---- */
   function setupReveal() {
+    const nodes = $$(".reveal");
+    if (!("IntersectionObserver" in window)) {
+      nodes.forEach((n) => n.classList.add("visible"));
+      return;
+    }
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting) {
@@ -195,8 +200,10 @@
           io.unobserve(e.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: "0px 0px -60px 0px" });
-    $$(".reveal").forEach((n) => io.observe(n));
+    }, { threshold: 0.05, rootMargin: "0px 0px 120px 0px" });
+    nodes.forEach((n) => io.observe(n));
+    // Fallback: pokud by IO cokoliv minul, po 1.5s zobraz vše
+    setTimeout(() => nodes.forEach((n) => n.classList.add("visible")), 1500);
   }
 
   /* ---- Contact form ---- */

@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import IndexPage from "@/pages/Index";
 import AdminPage from "@/routes/admin";
@@ -12,6 +12,9 @@ export default function App() {
         <Route path="/" element={<IndexPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/projekty/:id" element={<ProjectDetailPage />} />
+        {/* Zpětná kompatibilita se starým base path /zitnyeu */}
+        <Route path="/zitnyeu" element={<Navigate to="/" replace />} />
+        <Route path="/zitnyeu/*" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Toaster />

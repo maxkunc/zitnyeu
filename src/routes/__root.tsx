@@ -74,25 +74,50 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "zitny.eu — Cesta mladých k hvězdám" },
-      { name: "description", content: "Vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA." },
+      {
+        name: "description",
+        content:
+          "Vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA.",
+      },
       { name: "author", content: "zitny.eu" },
       { property: "og:title", content: "zitny.eu — Cesta mladých k hvězdám" },
-      { property: "og:description", content: "Vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA." },
+      {
+        property: "og:description",
+        content:
+          "Vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "zitny.eu — Cesta mladých k hvězdám" },
-      { name: "twitter:description", content: "Vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/10c6026b-e2db-4c84-9e58-03d2b888b1f0/id-preview-82bfa6f5--bdcc7c34-7eed-4e7d-943d-e79b6ef1e3f3.lovable.app-1779216833425.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/10c6026b-e2db-4c84-9e58-03d2b888b1f0/id-preview-82bfa6f5--bdcc7c34-7eed-4e7d-943d-e79b6ef1e3f3.lovable.app-1779216833425.png" },
+      {
+        name: "twitter:description",
+        content:
+          "Vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/10c6026b-e2db-4c84-9e58-03d2b888b1f0/id-preview-82bfa6f5--bdcc7c34-7eed-4e7d-943d-e79b6ef1e3f3.lovable.app-1779216833425.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/10c6026b-e2db-4c84-9e58-03d2b888b1f0/id-preview-82bfa6f5--bdcc7c34-7eed-4e7d-943d-e79b6ef1e3f3.lovable.app-1779216833425.png",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      },
     ],
   }),
-  shellComponent: RootShell,
+  // The static GitHub Pages build (vite.pages.config.ts) renders into its own pages.html
+  // instead, so the SSR document shell doesn't apply there — see RootComponent below.
+  shellComponent: __STATIC_SPA__ ? undefined : RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
@@ -117,6 +142,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {/* Without shellComponent, nothing else renders <HeadContent/> — React 19 hoists the
+          <title>/<meta>/<link> tags it renders into <head> regardless of nesting. */}
+      {__STATIC_SPA__ && <HeadContent />}
       <Outlet />
       <Toaster />
     </QueryClientProvider>

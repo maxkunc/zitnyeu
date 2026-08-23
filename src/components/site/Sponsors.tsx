@@ -26,7 +26,8 @@ export function Sponsors() {
       <div className="mx-auto max-w-7xl px-6">
         <SectionLabel>{t("label_partners")}</SectionLabel>
         <h2 className="mt-6 font-display text-4xl md:text-5xl font-bold max-w-3xl">
-          {t("sponsors_title_a")} <span className="text-gradient-cyber">{t("sponsors_title_b")}</span>.
+          {t("sponsors_title_a")}{" "}
+          <span className="text-gradient-cyber">{t("sponsors_title_b")}</span>.
         </h2>
       </div>
 
@@ -35,12 +36,17 @@ export function Sponsors() {
         <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
         <div className="flex gap-6 animate-marquee w-max">
           {doubled.map((s, i) => (
-            <div key={`${s.id}-${i}`} className="glass rounded-xl px-8 py-5 min-w-[220px] flex items-center gap-4">
+            <div
+              key={`${s.id}-${i}`}
+              className="glass rounded-xl px-8 py-5 min-w-[220px] flex items-center gap-4"
+            >
               <div className="h-16 w-16 aspect-square shrink-0 rounded-2xl bg-white/5 overflow-hidden flex items-center justify-center">
                 {s.logo ? (
                   <img src={s.logo} alt={s.name} className="h-full w-full object-cover" />
                 ) : (
-                  <span className="font-display text-lg font-bold text-muted-foreground">{s.name.slice(0, 2).toUpperCase()}</span>
+                  <span className="font-display text-lg font-bold text-muted-foreground">
+                    {s.name.slice(0, 2).toUpperCase()}
+                  </span>
                 )}
               </div>
               <div className="text-left">
@@ -64,13 +70,23 @@ export function Sponsors() {
           <div className="relative max-w-2xl">
             <div className="inline-flex items-center gap-2 text-primary mb-3">
               <Handshake className="h-5 w-5" />
-              <span className="text-xs uppercase tracking-[0.2em] font-mono">{t("sponsors_cta_btn")}</span>
+              <span className="text-xs uppercase tracking-[0.2em] font-mono">
+                {t("sponsors_cta_btn")}
+              </span>
             </div>
-            <h3 className="font-display text-2xl md:text-3xl font-bold">{t("sponsors_cta_title")}</h3>
+            <h3 className="font-display text-2xl md:text-3xl font-bold">
+              {t("sponsors_cta_title")}
+            </h3>
             <p className="mt-2 text-muted-foreground">{t("sponsors_cta_desc")}</p>
           </div>
-          <Button asChild size="lg" className="relative bg-gradient-cyber text-primary-foreground shadow-glow shrink-0">
-            <a href="#kontakty">{t("sponsors_cta_btn")} <ArrowRight className="ml-2 h-4 w-4" /></a>
+          <Button
+            asChild
+            size="lg"
+            className="relative bg-gradient-cyber text-primary-foreground shadow-glow shrink-0"
+          >
+            <a href="#kontakty">
+              {t("sponsors_cta_btn")} <ArrowRight className="ml-2 h-4 w-4" />
+            </a>
           </Button>
         </div>
       </div>

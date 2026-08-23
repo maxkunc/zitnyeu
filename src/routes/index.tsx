@@ -13,7 +13,11 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "zitny.eu — Mladí inženýři s pohledem k hvězdám" },
-      { name: "description", content: "Nezisková organizace vyvíjející vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA." },
+      {
+        name: "description",
+        content:
+          "Nezisková organizace vyvíjející vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA.",
+      },
       { property: "og:title", content: "zitny.eu — Vesmírné projekty pro mladé" },
       { property: "og:description", content: "Projekty, workshopy a mise pod patronací ESA." },
     ],

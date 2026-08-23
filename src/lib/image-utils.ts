@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
  */
 async function fileToCompressedBlob(
   file: File,
-  opts: { maxSize?: number; quality?: number } = {}
+  opts: { maxSize?: number; quality?: number } = {},
 ): Promise<{ blob: Blob; ext: string; contentType: string }> {
   const { maxSize = 1600, quality = 0.85 } = opts;
   if (!file.type.startsWith("image/")) throw new Error("Soubor není obrázek");
@@ -33,7 +33,7 @@ async function fileToCompressedBlob(
   const isPng = file.type === "image/png";
   const mime = isPng ? "image/png" : "image/jpeg";
   const blob: Blob = await new Promise((resolve, reject) =>
-    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Komprese selhala"))), mime, quality)
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Komprese selhala"))), mime, quality),
   );
   return { blob, ext: isPng ? "png" : "jpg", contentType: mime };
 }

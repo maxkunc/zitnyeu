@@ -15,7 +15,8 @@ export function Projects() {
       <div className="mx-auto max-w-7xl px-6">
         <SectionLabel>{t("label_projects")}</SectionLabel>
         <h2 className="mt-6 font-display text-4xl md:text-5xl font-bold max-w-3xl">
-          {t("projects_title_a")} <span className="text-gradient-cyber">{t("projects_title_b")}</span>.
+          {t("projects_title_a")}{" "}
+          <span className="text-gradient-cyber">{t("projects_title_b")}</span>.
         </h2>
 
         {major.length > 0 && (
@@ -26,7 +27,11 @@ export function Projects() {
                 <div key={p.id} className="relative glass rounded-2xl overflow-hidden">
                   <div className="relative h-48 bg-gradient-to-br from-primary/30 via-accent/10 to-transparent overflow-hidden">
                     {p.image ? (
-                      <img src={p.image} alt={p.title} className="absolute inset-0 h-full w-full object-cover" />
+                      <img
+                        src={p.image}
+                        alt={p.title}
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
                     ) : (
                       <>
                         <div className="absolute inset-0 grid-bg opacity-50" />
@@ -41,7 +46,9 @@ export function Projects() {
                   </div>
                   <div className="p-6">
                     <h4 className="font-display text-xl font-bold">{p.title}</h4>
-                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{p.description}</p>
+                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                      {p.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -64,7 +71,9 @@ export function Projects() {
                   <div className="p-5">
                     <div className="flex items-center justify-between gap-2">
                       <h4 className="font-display font-semibold">{p.title}</h4>
-                      <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded bg-primary/15 text-primary shrink-0">{p.status}</span>
+                      <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded bg-primary/15 text-primary shrink-0">
+                        {p.status}
+                      </span>
                     </div>
                     <p className="mt-2 text-sm text-muted-foreground">{p.description}</p>
                     {p.esa && !p.image && (
@@ -87,7 +96,9 @@ export function Projects() {
                 <div key={p.id} className="glass rounded-xl p-5 border-l-2 border-accent/60">
                   <div className="flex items-center justify-between">
                     <h4 className="font-display font-semibold">{p.title}</h4>
-                    <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded bg-accent/20 text-accent-foreground">{p.status}</span>
+                    <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded bg-accent/20 text-accent-foreground">
+                      {p.status}
+                    </span>
                   </div>
                   <p className="mt-2 text-sm text-muted-foreground">{p.description}</p>
                   {p.esa && (
@@ -116,7 +127,9 @@ function EsaBadge() {
 function SubHeading({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary/15 text-primary">{icon}</span>
+      <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary/15 text-primary">
+        {icon}
+      </span>
       <h3 className="font-display text-2xl font-bold">{title}</h3>
     </div>
   );

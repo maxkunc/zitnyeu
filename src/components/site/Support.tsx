@@ -100,9 +100,7 @@ export function Support() {
                     type="number"
                     min={1}
                     value={amount ?? ""}
-                    onChange={(e) =>
-                      setAmount(e.target.value ? Number(e.target.value) : null)
-                    }
+                    onChange={(e) => setAmount(e.target.value ? Number(e.target.value) : null)}
                     placeholder="—"
                     className="flex-1 bg-transparent outline-none font-display text-2xl font-bold"
                   />
@@ -197,9 +195,7 @@ function BankRow({
           <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono">
             {label}
           </div>
-          <div className="font-mono text-sm md:text-base font-semibold truncate">
-            {value}
-          </div>
+          <div className="font-mono text-sm md:text-base font-semibold truncate">{value}</div>
         </div>
       </div>
       <button

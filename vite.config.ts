@@ -12,4 +12,12 @@ export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
   },
+  // __STATIC_SPA__ is only ever true in the separate static build (vite.pages.config.ts),
+  // which doesn't go through this config at all. Defined here as false so the shared
+  // src/routes/__root.tsx can reference it unconditionally.
+  vite: {
+    define: {
+      __STATIC_SPA__: JSON.stringify(false),
+    },
+  },
 });

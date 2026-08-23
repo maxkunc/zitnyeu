@@ -1,13 +1,35 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { useAuth, useSite, uid, type Project, type Workshop, type Achievement, type Sponsor } from "@/lib/site-store";
+import {
+  useAuth,
+  useSite,
+  uid,
+  type Project,
+  type Workshop,
+  type Achievement,
+  type Sponsor,
+} from "@/lib/site-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
-  Rocket, LayoutDashboard, FolderKanban, GraduationCap, Trophy,
-  Building2, Inbox, LogOut, Plus, Trash2, ExternalLink, Lock, History, Menu, Save, Check,
+  Rocket,
+  LayoutDashboard,
+  FolderKanban,
+  GraduationCap,
+  Trophy,
+  Building2,
+  Inbox,
+  LogOut,
+  Plus,
+  Trash2,
+  ExternalLink,
+  Lock,
+  History,
+  Menu,
+  Save,
+  Check,
 } from "lucide-react";
 import { toast } from "sonner";
 import { handleImageUpload } from "@/lib/image-utils";
@@ -17,14 +39,20 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "projects" | "workshops" | "achievements" | "sponsors" | "messages" | "logs";
+type Tab =
+  "overview" | "projects" | "workshops" | "achievements" | "sponsors" | "messages" | "logs";
 
 function AdminPage() {
   const { authed, ready, user, role, login, logout } = useAuth();
   const [tab, setTab] = useState<Tab>("overview");
   const [navOpen, setNavOpen] = useState(false);
 
-  if (!ready) return <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Načítám…</div>;
+  if (!ready)
+    return (
+      <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">
+        Načítám…
+      </div>
+    );
   if (!authed) return <LoginScreen onLogin={login} />;
 
   const items: { id: Tab; label: string; icon: typeof Rocket }[] = [
@@ -47,7 +75,9 @@ function AdminPage() {
         </span>
         <div>
           <div className="font-display font-bold">zitny.eu</div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Mission control</div>
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            Mission control
+          </div>
         </div>
       </Link>
 
@@ -64,9 +94,14 @@ function AdminPage() {
           return (
             <button
               key={it.id}
-              onClick={() => { setTab(it.id); onPick?.(); }}
+              onClick={() => {
+                setTab(it.id);
+                onPick?.();
+              }}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-                active ? "bg-primary/15 text-primary border border-primary/30" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                active
+                  ? "bg-primary/15 text-primary border border-primary/30"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
               }`}
             >
               <I className="h-4 w-4" />
@@ -82,7 +117,15 @@ function AdminPage() {
             <ExternalLink className="h-4 w-4 mr-2" /> Zobrazit web
           </Button>
         </Link>
-        <Button variant="ghost" size="sm" onClick={() => { logout(); onPick?.(); }} className="w-full justify-start text-muted-foreground">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            logout();
+            onPick?.();
+          }}
+          className="w-full justify-start text-muted-foreground"
+        >
           <LogOut className="h-4 w-4 mr-2" /> Odhlásit
         </Button>
       </div>
@@ -144,7 +187,10 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => Promise<b
   return (
     <div className="min-h-screen flex items-center justify-center px-6 relative">
       <div className="absolute inset-0 starfield opacity-50" />
-      <form onSubmit={submit} className="relative glass rounded-2xl p-8 w-full max-w-md shadow-glow">
+      <form
+        onSubmit={submit}
+        className="relative glass rounded-2xl p-8 w-full max-w-md shadow-glow"
+      >
         <div className="flex items-center gap-3 mb-6">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-cyber">
             <Lock className="h-5 w-5 text-primary-foreground" />
@@ -155,10 +201,27 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => Promise<b
           </div>
         </div>
         <div className="space-y-3">
-          <Input value={u} onChange={(e) => setU(e.target.value)} placeholder="Uživatel" className="bg-background/40" autoComplete="username" />
-          <Input value={p} onChange={(e) => setP(e.target.value)} type="password" placeholder="Heslo" className="bg-background/40" autoComplete="current-password" />
+          <Input
+            value={u}
+            onChange={(e) => setU(e.target.value)}
+            placeholder="Uživatel"
+            className="bg-background/40"
+            autoComplete="username"
+          />
+          <Input
+            value={p}
+            onChange={(e) => setP(e.target.value)}
+            type="password"
+            placeholder="Heslo"
+            className="bg-background/40"
+            autoComplete="current-password"
+          />
         </div>
-        <Button type="submit" disabled={loading} className="w-full mt-6 bg-gradient-cyber text-primary-foreground shadow-glow">
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full mt-6 bg-gradient-cyber text-primary-foreground shadow-glow"
+        >
           {loading ? "Přihlašuji…" : "Přihlásit se"}
         </Button>
       </form>
@@ -166,7 +229,17 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => Promise<b
   );
 }
 
-function Section({ title, subtitle, children, onSave }: { title: string; subtitle?: string; children: React.ReactNode; onSave?: () => void }) {
+function Section({
+  title,
+  subtitle,
+  children,
+  onSave,
+}: {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+  onSave?: () => void;
+}) {
   const [saved, setSaved] = useState(false);
   const handle = () => {
     onSave?.();
@@ -179,10 +252,15 @@ function Section({ title, subtitle, children, onSave }: { title: string; subtitl
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h2 className="font-display text-2xl sm:text-3xl font-bold">{title}</h2>
-          {subtitle && <p className="text-muted-foreground mt-1 text-sm sm:text-base">{subtitle}</p>}
+          {subtitle && (
+            <p className="text-muted-foreground mt-1 text-sm sm:text-base">{subtitle}</p>
+          )}
         </div>
         {onSave && (
-          <Button onClick={handle} className="bg-gradient-cyber text-primary-foreground shadow-glow shrink-0 self-start">
+          <Button
+            onClick={handle}
+            className="bg-gradient-cyber text-primary-foreground shadow-glow shrink-0 self-start"
+          >
             {saved ? <Check className="h-4 w-4 mr-2" /> : <Save className="h-4 w-4 mr-2" />}
             {saved ? "Uloženo" : "Uložit změny"}
           </Button>
@@ -191,7 +269,11 @@ function Section({ title, subtitle, children, onSave }: { title: string; subtitl
       <div className="mt-6 sm:mt-8">{children}</div>
       {onSave && (
         <div className="mt-8 flex justify-end">
-          <Button onClick={handle} size="lg" className="bg-gradient-cyber text-primary-foreground shadow-glow">
+          <Button
+            onClick={handle}
+            size="lg"
+            className="bg-gradient-cyber text-primary-foreground shadow-glow"
+          >
             {saved ? <Check className="h-4 w-4 mr-2" /> : <Save className="h-4 w-4 mr-2" />}
             {saved ? "Uloženo" : "Uložit změny"}
           </Button>
@@ -213,7 +295,14 @@ function Overview() {
   ];
   const hasLocal = typeof window !== "undefined" && !!localStorage.getItem("zitny-site-data-v3");
   return (
-    <Section title="Přehled" subtitle={initialized ? "Aktuální stav obsahu webu zitny.eu — synchronizováno s cloudem" : "Načítám data z cloudu…"}>
+    <Section
+      title="Přehled"
+      subtitle={
+        initialized
+          ? "Aktuální stav obsahu webu zitny.eu — synchronizováno s cloudem"
+          : "Načítám data z cloudu…"
+      }
+    >
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((s) => (
           <div key={s.l} className="glass rounded-xl p-6">
@@ -227,9 +316,15 @@ function Overview() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <div className="font-display font-semibold">Lokální data v prohlížeči</div>
-              <p className="text-sm text-muted-foreground mt-1">Před přechodem na cloud jste editovali obsah lokálně. Můžete ho jednorázově nahrát do cloudu (přepíše současný cloud obsah).</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Před přechodem na cloud jste editovali obsah lokálně. Můžete ho jednorázově nahrát
+                do cloudu (přepíše současný cloud obsah).
+              </p>
             </div>
-            <Button onClick={importFromLocalStorage} className="bg-gradient-cyber text-primary-foreground shrink-0">
+            <Button
+              onClick={importFromLocalStorage}
+              className="bg-gradient-cyber text-primary-foreground shrink-0"
+            >
               Nahrát do cloudu
             </Button>
           </div>
@@ -242,13 +337,29 @@ function Overview() {
 function ProjectsAdmin() {
   const { data, update, log } = useSite();
   const { user } = useAuth();
-  const [draft, setDraft] = useState<Project>({ id: "", title: "", description: "", status: "Aktivní", category: "major", esa: false, image: "" });
+  const [draft, setDraft] = useState<Project>({
+    id: "",
+    title: "",
+    description: "",
+    status: "Aktivní",
+    category: "major",
+    esa: false,
+    image: "",
+  });
 
   const add = () => {
     if (!draft.title.trim()) return toast.error("Zadejte název");
     update((d) => ({ ...d, projects: [{ ...draft, id: uid() }, ...d.projects] }));
     log(user!, `Přidal projekt „${draft.title}"`);
-    setDraft({ id: "", title: "", description: "", status: "Aktivní", category: "major", esa: false, image: "" });
+    setDraft({
+      id: "",
+      title: "",
+      description: "",
+      status: "Aktivní",
+      category: "major",
+      esa: false,
+      image: "",
+    });
     toast.success("Projekt přidán");
   };
   const remove = (id: string, title: string) => {
@@ -256,31 +367,74 @@ function ProjectsAdmin() {
     log(user!, `Smazal projekt „${title}"`);
   };
   const edit = (id: string, patch: Partial<Project>) =>
-    update((d) => ({ ...d, projects: d.projects.map((p) => (p.id === id ? { ...p, ...patch } : p)) }));
+    update((d) => ({
+      ...d,
+      projects: d.projects.map((p) => (p.id === id ? { ...p, ...patch } : p)),
+    }));
   const commitEdit = (title: string) => log(user!, `Upravil projekt „${title}"`);
 
   const onFile = handleImageUpload;
 
   return (
-    <Section title="Projekty" subtitle="Velké projekty, menší výzvy a realizované spolupráce. ESA patronace je vlastnost projektu — zapnutelná pro libovolnou kategorii." onSave={() => log(user!, "Uložil sekci Projekty")}>
+    <Section
+      title="Projekty"
+      subtitle="Velké projekty, menší výzvy a realizované spolupráce. ESA patronace je vlastnost projektu — zapnutelná pro libovolnou kategorii."
+      onSave={() => log(user!, "Uložil sekci Projekty")}
+    >
       <div className="glass rounded-xl p-5 mb-6 space-y-3">
         <div className="grid md:grid-cols-2 gap-3">
-          <Input placeholder="Název projektu" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} className="bg-background/40" />
-          <Input placeholder="Status (např. Aktivní)" value={draft.status} onChange={(e) => setDraft({ ...draft, status: e.target.value })} className="bg-background/40" />
-          <select value={draft.category} onChange={(e) => setDraft({ ...draft, category: e.target.value as Project["category"] })} className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm">
+          <Input
+            placeholder="Název projektu"
+            value={draft.title}
+            onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+            className="bg-background/40"
+          />
+          <Input
+            placeholder="Status (např. Aktivní)"
+            value={draft.status}
+            onChange={(e) => setDraft({ ...draft, status: e.target.value })}
+            className="bg-background/40"
+          />
+          <select
+            value={draft.category}
+            onChange={(e) =>
+              setDraft({ ...draft, category: e.target.value as Project["category"] })
+            }
+            className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm"
+          >
             <option value="major">Velký projekt</option>
             <option value="minor">Menší / výzva</option>
             <option value="past">Realizováno</option>
           </select>
           <label className="flex items-center gap-2 text-sm glass rounded-md px-3 h-10 cursor-pointer">
-            <input type="checkbox" checked={!!draft.esa} onChange={(e) => setDraft({ ...draft, esa: e.target.checked })} />
+            <input
+              type="checkbox"
+              checked={!!draft.esa}
+              onChange={(e) => setDraft({ ...draft, esa: e.target.checked })}
+            />
             Pod patronací ESA
           </label>
         </div>
-        <Textarea placeholder="Popis" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} className="bg-background/40" rows={2} />
+        <Textarea
+          placeholder="Popis"
+          value={draft.description}
+          onChange={(e) => setDraft({ ...draft, description: e.target.value })}
+          className="bg-background/40"
+          rows={2}
+        />
         <div className="grid md:grid-cols-[1fr_auto_auto] gap-3 items-center">
-          <Input placeholder="URL obrázku (nebo nahrajte)" value={draft.image || ""} onChange={(e) => setDraft({ ...draft, image: e.target.value })} className="bg-background/40" />
-          <input type="file" accept="image/*" onChange={onFile((url) => setDraft({ ...draft, image: url }))} className="text-xs" />
+          <Input
+            placeholder="URL obrázku (nebo nahrajte)"
+            value={draft.image || ""}
+            onChange={(e) => setDraft({ ...draft, image: e.target.value })}
+            className="bg-background/40"
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={onFile((url) => setDraft({ ...draft, image: url }))}
+            className="text-xs"
+          />
           <Button onClick={add} className="bg-gradient-cyber text-primary-foreground">
             <Plus className="h-4 w-4 mr-2" /> Přidat projekt
           </Button>
@@ -290,31 +444,82 @@ function ProjectsAdmin() {
 
       <div className="grid gap-3">
         {data.projects.map((p) => (
-          <div key={p.id} className="glass rounded-xl p-4 grid md:grid-cols-[80px_1fr_140px_140px_auto_auto] gap-3 items-start">
+          <div
+            key={p.id}
+            className="glass rounded-xl p-4 grid md:grid-cols-[80px_1fr_140px_140px_auto_auto] gap-3 items-start"
+          >
             {p.image ? (
               <img src={p.image} alt={p.title} className="h-20 w-20 rounded-md object-cover" />
             ) : (
               <div className="h-20 w-20 rounded-md grid-bg border border-border" />
             )}
             <div className="space-y-2">
-              <Input value={p.title} onChange={(e) => edit(p.id, { title: e.target.value })} onBlur={() => commitEdit(p.title)} className="bg-background/40 font-semibold" />
-              <Textarea value={p.description} onChange={(e) => edit(p.id, { description: e.target.value })} onBlur={() => commitEdit(p.title)} className="bg-background/40" rows={2} />
+              <Input
+                value={p.title}
+                onChange={(e) => edit(p.id, { title: e.target.value })}
+                onBlur={() => commitEdit(p.title)}
+                className="bg-background/40 font-semibold"
+              />
+              <Textarea
+                value={p.description}
+                onChange={(e) => edit(p.id, { description: e.target.value })}
+                onBlur={() => commitEdit(p.title)}
+                className="bg-background/40"
+                rows={2}
+              />
               <div className="flex items-center gap-2">
-                <Input placeholder="URL obrázku" value={p.image || ""} onChange={(e) => edit(p.id, { image: e.target.value })} className="bg-background/40 text-xs h-8" />
-                <input type="file" accept="image/*" onChange={onFile((url) => { edit(p.id, { image: url }); commitEdit(p.title); })} className="text-xs w-32" />
+                <Input
+                  placeholder="URL obrázku"
+                  value={p.image || ""}
+                  onChange={(e) => edit(p.id, { image: e.target.value })}
+                  className="bg-background/40 text-xs h-8"
+                />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={onFile((url) => {
+                    edit(p.id, { image: url });
+                    commitEdit(p.title);
+                  })}
+                  className="text-xs w-32"
+                />
               </div>
             </div>
-            <Input value={p.status} onChange={(e) => edit(p.id, { status: e.target.value })} onBlur={() => commitEdit(p.title)} className="bg-background/40" />
-            <select value={p.category} onChange={(e) => { edit(p.id, { category: e.target.value as Project["category"] }); commitEdit(p.title); }} className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm">
+            <Input
+              value={p.status}
+              onChange={(e) => edit(p.id, { status: e.target.value })}
+              onBlur={() => commitEdit(p.title)}
+              className="bg-background/40"
+            />
+            <select
+              value={p.category}
+              onChange={(e) => {
+                edit(p.id, { category: e.target.value as Project["category"] });
+                commitEdit(p.title);
+              }}
+              className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm"
+            >
               <option value="major">Velký</option>
               <option value="minor">Menší</option>
               <option value="past">Realizováno</option>
             </select>
             <label className="flex items-center gap-2 text-xs whitespace-nowrap">
-              <input type="checkbox" checked={!!p.esa} onChange={(e) => { edit(p.id, { esa: e.target.checked }); commitEdit(p.title); }} />
+              <input
+                type="checkbox"
+                checked={!!p.esa}
+                onChange={(e) => {
+                  edit(p.id, { esa: e.target.checked });
+                  commitEdit(p.title);
+                }}
+              />
               ESA
             </label>
-            <Button variant="ghost" size="icon" onClick={() => remove(p.id, p.title)} className="text-destructive">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => remove(p.id, p.title)}
+              className="text-destructive"
+            >
               <Trash2 className="h-4 w-4" />
             </Button>
           </div>
@@ -339,27 +544,72 @@ function WorkshopsAdmin() {
     log(user!, `Smazal workshop „${title}"`);
   };
   const edit = (id: string, patch: Partial<Workshop>) =>
-    update((d) => ({ ...d, workshops: d.workshops.map((w) => (w.id === id ? { ...w, ...patch } : w)) }));
+    update((d) => ({
+      ...d,
+      workshops: d.workshops.map((w) => (w.id === id ? { ...w, ...patch } : w)),
+    }));
 
   return (
-    <Section title="Workshopy & Akce" subtitle="Den s Vesmírem, Dům Ronalda McDonalda a další" onSave={() => log(user!, "Uložil sekci Workshopy")}>
+    <Section
+      title="Workshopy & Akce"
+      subtitle="Den s Vesmírem, Dům Ronalda McDonalda a další"
+      onSave={() => log(user!, "Uložil sekci Workshopy")}
+    >
       <div className="glass rounded-xl p-5 mb-6 grid md:grid-cols-2 gap-3">
-        <Input placeholder="Název" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} className="bg-background/40" />
-        <Input placeholder="Termín" value={draft.date} onChange={(e) => setDraft({ ...draft, date: e.target.value })} className="bg-background/40" />
-        <Textarea placeholder="Popis" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} className="md:col-span-2 bg-background/40" rows={2} />
+        <Input
+          placeholder="Název"
+          value={draft.title}
+          onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+          className="bg-background/40"
+        />
+        <Input
+          placeholder="Termín"
+          value={draft.date}
+          onChange={(e) => setDraft({ ...draft, date: e.target.value })}
+          className="bg-background/40"
+        />
+        <Textarea
+          placeholder="Popis"
+          value={draft.description}
+          onChange={(e) => setDraft({ ...draft, description: e.target.value })}
+          className="md:col-span-2 bg-background/40"
+          rows={2}
+        />
         <Button onClick={add} className="md:col-span-2 bg-gradient-cyber text-primary-foreground">
           <Plus className="h-4 w-4 mr-2" /> Přidat akci
         </Button>
       </div>
       <div className="grid gap-3">
         {data.workshops.map((w) => (
-          <div key={w.id} className="glass rounded-xl p-4 grid md:grid-cols-[1fr_180px_auto] gap-3 items-start">
+          <div
+            key={w.id}
+            className="glass rounded-xl p-4 grid md:grid-cols-[1fr_180px_auto] gap-3 items-start"
+          >
             <div>
-              <Input value={w.title} onChange={(e) => edit(w.id, { title: e.target.value })} onBlur={() => log(user!, `Upravil workshop „${w.title}"`)} className="bg-background/40 font-semibold" />
-              <Textarea value={w.description} onChange={(e) => edit(w.id, { description: e.target.value })} className="bg-background/40 mt-2" rows={2} />
+              <Input
+                value={w.title}
+                onChange={(e) => edit(w.id, { title: e.target.value })}
+                onBlur={() => log(user!, `Upravil workshop „${w.title}"`)}
+                className="bg-background/40 font-semibold"
+              />
+              <Textarea
+                value={w.description}
+                onChange={(e) => edit(w.id, { description: e.target.value })}
+                className="bg-background/40 mt-2"
+                rows={2}
+              />
             </div>
-            <Input value={w.date || ""} onChange={(e) => edit(w.id, { date: e.target.value })} className="bg-background/40" />
-            <Button variant="ghost" size="icon" onClick={() => remove(w.id, w.title)} className="text-destructive">
+            <Input
+              value={w.date || ""}
+              onChange={(e) => edit(w.id, { date: e.target.value })}
+              className="bg-background/40"
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => remove(w.id, w.title)}
+              className="text-destructive"
+            >
               <Trash2 className="h-4 w-4" />
             </Button>
           </div>
@@ -372,7 +622,12 @@ function WorkshopsAdmin() {
 function AchievementsAdmin() {
   const { data, update, log } = useSite();
   const { user } = useAuth();
-  const [draft, setDraft] = useState<Achievement>({ id: "", metric: "", label: "", description: "" });
+  const [draft, setDraft] = useState<Achievement>({
+    id: "",
+    metric: "",
+    label: "",
+    description: "",
+  });
   const add = () => {
     if (!draft.metric.trim()) return;
     update((d) => ({ ...d, achievements: [...d.achievements, { ...draft, id: uid() }] }));
@@ -384,25 +639,67 @@ function AchievementsAdmin() {
     log(user!, `Smazal úspěch „${label}"`);
   };
   const edit = (id: string, patch: Partial<Achievement>) =>
-    update((d) => ({ ...d, achievements: d.achievements.map((a) => (a.id === id ? { ...a, ...patch } : a)) }));
+    update((d) => ({
+      ...d,
+      achievements: d.achievements.map((a) => (a.id === id ? { ...a, ...patch } : a)),
+    }));
 
   return (
-    <Section title="Úspěchy" subtitle="Klíčová čísla a milníky" onSave={() => log(user!, "Uložil sekci Úspěchy")}>
+    <Section
+      title="Úspěchy"
+      subtitle="Klíčová čísla a milníky"
+      onSave={() => log(user!, "Uložil sekci Úspěchy")}
+    >
       <div className="glass rounded-xl p-5 mb-6 grid md:grid-cols-4 gap-3">
-        <Input placeholder="Číslo" value={draft.metric} onChange={(e) => setDraft({ ...draft, metric: e.target.value })} className="bg-background/40" />
-        <Input placeholder="Popisek" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value })} className="bg-background/40" />
-        <Input placeholder="Detail" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} className="bg-background/40" />
+        <Input
+          placeholder="Číslo"
+          value={draft.metric}
+          onChange={(e) => setDraft({ ...draft, metric: e.target.value })}
+          className="bg-background/40"
+        />
+        <Input
+          placeholder="Popisek"
+          value={draft.label}
+          onChange={(e) => setDraft({ ...draft, label: e.target.value })}
+          className="bg-background/40"
+        />
+        <Input
+          placeholder="Detail"
+          value={draft.description}
+          onChange={(e) => setDraft({ ...draft, description: e.target.value })}
+          className="bg-background/40"
+        />
         <Button onClick={add} className="bg-gradient-cyber text-primary-foreground">
           <Plus className="h-4 w-4 mr-2" /> Přidat
         </Button>
       </div>
       <div className="grid gap-3">
         {data.achievements.map((a) => (
-          <div key={a.id} className="glass rounded-xl p-4 grid md:grid-cols-[120px_1fr_2fr_auto] gap-3 items-center">
-            <Input value={a.metric} onChange={(e) => edit(a.id, { metric: e.target.value })} className="bg-background/40 font-display text-lg font-bold" />
-            <Input value={a.label} onChange={(e) => edit(a.id, { label: e.target.value })} className="bg-background/40" />
-            <Input value={a.description} onChange={(e) => edit(a.id, { description: e.target.value })} className="bg-background/40" />
-            <Button variant="ghost" size="icon" onClick={() => remove(a.id, a.label)} className="text-destructive">
+          <div
+            key={a.id}
+            className="glass rounded-xl p-4 grid md:grid-cols-[120px_1fr_2fr_auto] gap-3 items-center"
+          >
+            <Input
+              value={a.metric}
+              onChange={(e) => edit(a.id, { metric: e.target.value })}
+              className="bg-background/40 font-display text-lg font-bold"
+            />
+            <Input
+              value={a.label}
+              onChange={(e) => edit(a.id, { label: e.target.value })}
+              className="bg-background/40"
+            />
+            <Input
+              value={a.description}
+              onChange={(e) => edit(a.id, { description: e.target.value })}
+              className="bg-background/40"
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => remove(a.id, a.label)}
+              className="text-destructive"
+            >
               <Trash2 className="h-4 w-4" />
             </Button>
           </div>
@@ -423,23 +720,43 @@ function SponsorsAdmin() {
 
   const add = () => {
     if (!name.trim()) return;
-    update((d) => ({ ...d, sponsors: [...d.sponsors, { id: uid(), name, tier, logo } as Sponsor] }));
+    update((d) => ({
+      ...d,
+      sponsors: [...d.sponsors, { id: uid(), name, tier, logo } as Sponsor],
+    }));
     log(user!, `Přidal partnera „${name}"`);
-    setName(""); setLogo("");
+    setName("");
+    setLogo("");
   };
   const remove = (id: string, n: string) => {
     update((d) => ({ ...d, sponsors: d.sponsors.filter((s) => s.id !== id) }));
     log(user!, `Smazal partnera „${n}"`);
   };
   const editSponsor = (id: string, patch: Partial<Sponsor>) =>
-    update((d) => ({ ...d, sponsors: d.sponsors.map((s) => (s.id === id ? { ...s, ...patch } : s)) }));
+    update((d) => ({
+      ...d,
+      sponsors: d.sponsors.map((s) => (s.id === id ? { ...s, ...patch } : s)),
+    }));
 
   return (
-    <Section title="Partneři" subtitle="Generální, hlavní a mediální partneři. Můžete nahrát logo (PNG s průhledným pozadím funguje nejlépe)." onSave={() => log(user!, "Uložil sekci Partneři")}>
+    <Section
+      title="Partneři"
+      subtitle="Generální, hlavní a mediální partneři. Můžete nahrát logo (PNG s průhledným pozadím funguje nejlépe)."
+      onSave={() => log(user!, "Uložil sekci Partneři")}
+    >
       <div className="glass rounded-xl p-5 mb-6 space-y-3">
         <div className="grid md:grid-cols-[1fr_180px_auto] gap-3">
-          <Input placeholder="Název partnera" value={name} onChange={(e) => setName(e.target.value)} className="bg-background/40" />
-          <select value={tier} onChange={(e) => setTier(e.target.value as Sponsor["tier"])} className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm">
+          <Input
+            placeholder="Název partnera"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="bg-background/40"
+          />
+          <select
+            value={tier}
+            onChange={(e) => setTier(e.target.value as Sponsor["tier"])}
+            className="bg-background/40 border border-border rounded-md px-3 h-10 text-sm"
+          >
             <option value="general">Generální</option>
             <option value="main">Hlavní</option>
             <option value="media">Mediální</option>
@@ -449,30 +766,60 @@ function SponsorsAdmin() {
           </Button>
         </div>
         <div className="flex items-center gap-3">
-          <Input placeholder="URL loga (nebo nahrajte)" value={logo} onChange={(e) => setLogo(e.target.value)} className="bg-background/40" />
+          <Input
+            placeholder="URL loga (nebo nahrajte)"
+            value={logo}
+            onChange={(e) => setLogo(e.target.value)}
+            className="bg-background/40"
+          />
           <input type="file" accept="image/*" onChange={onFile(setLogo)} className="text-xs" />
-          {logo && <img src={logo} alt="" className="h-10 w-10 object-contain bg-white/5 rounded" />}
+          {logo && (
+            <img src={logo} alt="" className="h-10 w-10 object-contain bg-white/5 rounded" />
+          )}
         </div>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {data.sponsors.map((s) => (
           <div key={s.id} className="glass rounded-xl p-4 flex items-center gap-3">
             <div className="h-14 w-14 shrink-0 rounded-md bg-white/5 border border-border flex items-center justify-center overflow-hidden">
-              {s.logo ? <img src={s.logo} alt={s.name} className="h-full w-full object-contain" /> : <Building2 className="h-5 w-5 text-muted-foreground" />}
+              {s.logo ? (
+                <img src={s.logo} alt={s.name} className="h-full w-full object-contain" />
+              ) : (
+                <Building2 className="h-5 w-5 text-muted-foreground" />
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-display font-semibold truncate">{s.name}</div>
-              <select value={s.tier || "main"} onChange={(e) => editSponsor(s.id, { tier: e.target.value as Sponsor["tier"] })} className="bg-background/40 border border-border rounded-md px-2 h-7 text-xs mt-1">
+              <select
+                value={s.tier || "main"}
+                onChange={(e) => editSponsor(s.id, { tier: e.target.value as Sponsor["tier"] })}
+                className="bg-background/40 border border-border rounded-md px-2 h-7 text-xs mt-1"
+              >
                 <option value="general">Generální</option>
                 <option value="main">Hlavní</option>
                 <option value="media">Mediální</option>
               </select>
               <div className="flex items-center gap-1 mt-1">
-                <Input placeholder="URL loga" value={s.logo || ""} onChange={(e) => editSponsor(s.id, { logo: e.target.value })} className="bg-background/40 text-xs h-7" />
-                <input type="file" accept="image/*" onChange={onFile((url) => editSponsor(s.id, { logo: url }))} className="text-[10px] w-24" />
+                <Input
+                  placeholder="URL loga"
+                  value={s.logo || ""}
+                  onChange={(e) => editSponsor(s.id, { logo: e.target.value })}
+                  className="bg-background/40 text-xs h-7"
+                />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={onFile((url) => editSponsor(s.id, { logo: url }))}
+                  className="text-[10px] w-24"
+                />
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => remove(s.id, s.name)} className="text-destructive">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => remove(s.id, s.name)}
+              className="text-destructive"
+            >
               <Trash2 className="h-4 w-4" />
             </Button>
           </div>
@@ -486,9 +833,14 @@ function MessagesAdmin() {
   const { data, deleteMessage } = useSite();
   const remove = (id: string) => deleteMessage(id);
   return (
-    <Section title="Příchozí zprávy" subtitle="Zprávy z kontaktního formuláře (přesměrované také na info@zitny.eu)">
+    <Section
+      title="Příchozí zprávy"
+      subtitle="Zprávy z kontaktního formuláře (přesměrované také na info@zitny.eu)"
+    >
       {data.messages.length === 0 ? (
-        <div className="glass rounded-xl p-12 text-center text-muted-foreground">Zatím žádné zprávy.</div>
+        <div className="glass rounded-xl p-12 text-center text-muted-foreground">
+          Zatím žádné zprávy.
+        </div>
       ) : (
         <div className="glass rounded-xl overflow-x-auto">
           <table className="w-full text-sm min-w-[600px]">
@@ -507,9 +859,16 @@ function MessagesAdmin() {
                   <td className="px-4 py-3 font-semibold">{m.name}</td>
                   <td className="px-4 py-3 text-muted-foreground">{m.email}</td>
                   <td className="px-4 py-3 max-w-md">{m.message}</td>
-                  <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{new Date(m.createdAt).toLocaleString("cs-CZ")}</td>
+                  <td className="px-4 py-3 text-muted-foreground font-mono text-xs">
+                    {new Date(m.createdAt).toLocaleString("cs-CZ")}
+                  </td>
                   <td className="px-4 py-3">
-                    <Button variant="ghost" size="icon" onClick={() => remove(m.id)} className="text-destructive">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => remove(m.id)}
+                      className="text-destructive"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </td>
@@ -528,7 +887,9 @@ function LogsAdmin() {
   return (
     <Section title="Historie změn" subtitle="Kdo a kdy upravoval obsah webu">
       {!data.logs || data.logs.length === 0 ? (
-        <div className="glass rounded-xl p-12 text-center text-muted-foreground">Zatím žádné záznamy.</div>
+        <div className="glass rounded-xl p-12 text-center text-muted-foreground">
+          Zatím žádné záznamy.
+        </div>
       ) : (
         <div className="glass rounded-xl overflow-x-auto">
           <table className="w-full text-sm min-w-[520px]">
@@ -544,7 +905,9 @@ function LogsAdmin() {
                 <tr key={l.id} className="border-t border-border">
                   <td className="px-4 py-3 font-semibold text-primary">{l.who}</td>
                   <td className="px-4 py-3">{l.action}</td>
-                  <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{new Date(l.at).toLocaleString("cs-CZ")}</td>
+                  <td className="px-4 py-3 text-muted-foreground font-mono text-xs">
+                    {new Date(l.at).toLocaleString("cs-CZ")}
+                  </td>
                 </tr>
               ))}
             </tbody>

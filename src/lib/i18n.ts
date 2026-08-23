@@ -33,7 +33,7 @@ export function useLang() {
       return () => listeners.delete(cb);
     },
     getSnapshot,
-    () => "cs" as Lang
+    () => "cs" as Lang,
   );
   const T = dict[lang];
   return { lang, setLang, t: (k: keyof typeof dict.cs) => T[k] ?? dict.cs[k] };
@@ -98,13 +98,11 @@ const dict = {
 
     contacts_title_a: "Pojďme se",
     contacts_title_b: "spojit",
-    contacts_desc:
-      "Máte zájem o workshop, spolupráci nebo se chcete na něco zeptat? Napište nám!",
+    contacts_desc: "Máte zájem o workshop, spolupráci nebo se chcete na něco zeptat? Napište nám!",
     contact_email: "E-mail",
     contact_phone: "Telefon",
     contact_account: "Bankovní účet",
-    contact_account_note:
-      "Podpořte naše mise. Každá koruna pomáhá mladým lidem dosáhnout hvězd.",
+    contact_account_note: "Podpořte naše mise. Každá koruna pomáhá mladým lidem dosáhnout hvězd.",
     form_name: "Jméno",
     form_email_placeholder: "Váš e-mail",
     form_message: "Vaše zpráva…",

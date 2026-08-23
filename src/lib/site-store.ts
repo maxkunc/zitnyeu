@@ -1,5 +1,5 @@
-import { useEffect, useState, useSyncExternalStore } from "react";
-import type { RealtimePostgresChangesPayload, Session, User } from "@supabase/supabase-js";
+import { useEffect, useSyncExternalStore } from "react";
+import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { toast } from "sonner";
@@ -245,16 +245,11 @@ async function init() {
     setState({ ...state, ...content });
     initialized = true;
 
-    // Pokud je už přihlášený admin (např. po refreshi), načti admin data
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (session) {
-      try {
-        await loadAdminData();
-      } catch {
-        /* anon visitor — ignore */
-      }
+    // Admin panel je bez přihlášení veřejný, takže zprávy a historii načteme rovnou.
+    try {
+      await loadAdminData();
+    } catch (e) {
+      console.error(e);
     }
 
     // Realtime — pouze veřejný site_content (contact_messages už není v publikaci)
@@ -269,19 +264,6 @@ async function init() {
         },
       )
       .subscribe();
-
-    // Reaguj na přihlášení/odhlášení — načti/vyprázdni admin data
-    supabase.auth.onAuthStateChange(async (event) => {
-      if (event === "SIGNED_IN") {
-        try {
-          await loadAdminData();
-        } catch (e) {
-          console.error(e);
-        }
-      } else if (event === "SIGNED_OUT") {
-        setState({ ...state, messages: [], logs: [] });
-      }
-    });
   } catch (err) {
     console.error("Inicializace cloud dat selhala:", err);
     toast.error("Nepodařilo se načíst data z cloudu");
@@ -413,56 +395,10 @@ export function useSite() {
   };
 }
 
-// ---- Supabase Auth (3 admin účty s pevně mapovanými usernames -> e-maily) ----
-const USERNAME_TO_EMAIL: Record<string, { email: string; role: string }> = {
-  admin: { email: "admin@zitny.eu", role: "Hlavní administrátor" },
-  koordinator: { email: "koordinator@zitny.eu", role: "Koordinátor projektů" },
-  editor: { email: "editor@zitny.eu", role: "Editor obsahu" },
-};
-const EMAIL_TO_USERNAME: Record<string, string> = Object.fromEntries(
-  Object.entries(USERNAME_TO_EMAIL).map(([u, v]) => [v.email, u]),
-);
-
-function deriveUsername(sessionUser: User | null): string | null {
-  if (!sessionUser?.email) return null;
-  return EMAIL_TO_USERNAME[sessionUser.email] ?? sessionUser.email;
-}
-
+// ---- Admin panel je veřejný (bez přihlášení) ----
+// `user` zůstává jen jako popisek pro atribuci v historii změn (audit_logs.who).
 export function useAuth() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setReady(true);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
-
-  const username = deriveUsername(session?.user ?? null);
-  const role = username ? USERNAME_TO_EMAIL[username]?.role : undefined;
-
-  return {
-    ready,
-    user: username,
-    authed: !!session,
-    role,
-    accounts: Object.entries(USERNAME_TO_EMAIL).map(([u, v]) => ({ user: u, role: v.role })),
-    login: async (u: string, p: string): Promise<boolean> => {
-      const key = u.trim().toLowerCase();
-      const mapped = USERNAME_TO_EMAIL[key];
-      // umožni i přímé zadání e-mailu
-      const email = mapped?.email ?? (key.includes("@") ? key : null);
-      if (!email) return false;
-      const { error } = await supabase.auth.signInWithPassword({ email, password: p });
-      return !error;
-    },
-    logout: async () => {
-      await supabase.auth.signOut();
-    },
-  };
+  return { user: "admin" };
 }
 
 export const uid = () => Math.random().toString(36).slice(2, 10);

@@ -2,27 +2,20 @@
 
 Project: `ecacuvajvbfgmsrqpnye` (see `config.toml` / the repo's `.env`).
 
-`migrations/` creates the schema (tables, RLS policies, storage bucket) in two steps:
+`migrations/` creates the schema and its RLS policies in three steps:
 
-1. `20260823090135_zitny_schema.sql` — tables, the `has_role()` helper, and (unused by the
-   app now, see below) admin-only RLS policies gated on `auth.users` / `user_roles`.
-2. `20260823091156_public_admin_no_auth.sql` — the admin panel (`/admin`) was made public,
-   by request: no login screen, so requests always run as the Supabase `anon` role. This
-   migration replaces the admin-only policies from step 1 with open ones so `anon` can read
-   and write everything the admin panel needs (site content, contact messages, audit log,
-   image uploads).
+1. `20260823090135_zitny_schema.sql` — tables, the `has_role()` helper, and admin-only RLS
+   policies gated on `auth.users` / `user_roles`.
+2. `20260823091156_public_admin_no_auth.sql` — briefly made `/admin` public (no login), by
+   request.
+3. `20260829185113_restore_admin_auth.sql` — reverted step 2: `/admin` requires login again,
+   and RLS is back to authenticated + `has_role('admin')` only.
 
-**Anyone who can reach `/admin` can edit the site, delete visitor messages, and read the
-audit log.** There is no authentication layer at all — this was an explicit, confirmed
-trade-off, not an oversight. To re-add a login gate later, restore `auth`/`role`/`login`/
-`logout` in `useAuth()` (`src/lib/site-store.ts`) and reinstate `has_role()`-gated RLS
-policies (see step 1's migration for the pattern, and `git log` for the removed
-`LoginScreen` component in `src/routes/admin.tsx`).
-
-The 3 accounts seeded in the previous version of this project (`admin` / `koordinator` /
-`editor` @zitny.eu) are **not** carried over here — they were never re-created in this
-project. If auth is reinstated, seed accounts via the Supabase SQL Editor (never commit
-plaintext passwords to migrations):
+The 3 admin accounts (`admin` / `koordinator` / `editor` @zitny.eu) already exist in this
+project's `auth.users` with the `admin` role — they were seeded when the project was
+created and were never removed, so the same login credentials still work. Passwords are
+**not** stored in this repo (never commit plaintext passwords to migrations). To rotate or
+recreate an account, run something like this in the Supabase SQL Editor instead:
 
 ```sql
 DO $$
@@ -71,3 +64,7 @@ BEGIN
   END LOOP;
 END $$;
 ```
+
+The frontend (`src/lib/site-store.ts`) maps the login usernames `admin` / `koordinator` /
+`editor` to these three email addresses — the emails must match if you add or rename
+accounts.

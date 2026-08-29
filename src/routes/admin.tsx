@@ -21,9 +21,11 @@ import {
   Trophy,
   Building2,
   Inbox,
+  LogOut,
   Plus,
   Trash2,
   ExternalLink,
+  Lock,
   History,
   Menu,
   Save,
@@ -41,8 +43,17 @@ type Tab =
   "overview" | "projects" | "workshops" | "achievements" | "sponsors" | "messages" | "logs";
 
 function AdminPage() {
+  const { authed, ready, user, role, login, logout } = useAuth();
   const [tab, setTab] = useState<Tab>("overview");
   const [navOpen, setNavOpen] = useState(false);
+
+  if (!ready)
+    return (
+      <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">
+        Načítám…
+      </div>
+    );
+  if (!authed) return <LoginScreen onLogin={login} />;
 
   const items: { id: Tab; label: string; icon: typeof Rocket }[] = [
     { id: "overview", label: "Přehled", icon: LayoutDashboard },
@@ -69,6 +80,12 @@ function AdminPage() {
           </div>
         </div>
       </Link>
+
+      <div className="glass rounded-lg p-3 mb-6">
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Přihlášen</div>
+        <div className="font-display font-bold mt-0.5">{user}</div>
+        <div className="text-xs text-primary">{role}</div>
+      </div>
 
       <nav className="flex flex-col gap-1 flex-1">
         {items.map((it) => {
@@ -100,6 +117,17 @@ function AdminPage() {
             <ExternalLink className="h-4 w-4 mr-2" /> Zobrazit web
           </Button>
         </Link>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            logout();
+            onPick?.();
+          }}
+          className="w-full justify-start text-muted-foreground"
+        >
+          <LogOut className="h-4 w-4 mr-2" /> Odhlásit
+        </Button>
       </div>
     </div>
   );
@@ -124,6 +152,7 @@ function AdminPage() {
           </span>
           <div className="font-display font-bold text-sm">{currentLabel}</div>
         </div>
+        <div className="text-[10px] uppercase tracking-wider text-primary font-mono">{user}</div>
       </header>
 
       {/* Desktop sidebar */}
@@ -140,6 +169,62 @@ function AdminPage() {
         {tab === "messages" && <MessagesAdmin />}
         {tab === "logs" && <LogsAdmin />}
       </main>
+    </div>
+  );
+}
+
+function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => Promise<boolean> }) {
+  const [u, setU] = useState("");
+  const [p, setP] = useState("");
+  const [loading, setLoading] = useState(false);
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const ok = await onLogin(u, p);
+    setLoading(false);
+    if (!ok) toast.error("Neplatné přihlašovací údaje");
+  };
+  return (
+    <div className="min-h-screen flex items-center justify-center px-6 relative">
+      <div className="absolute inset-0 starfield opacity-50" />
+      <form
+        onSubmit={submit}
+        className="relative glass rounded-2xl p-8 w-full max-w-md shadow-glow"
+      >
+        <div className="flex items-center gap-3 mb-6">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-cyber">
+            <Lock className="h-5 w-5 text-primary-foreground" />
+          </span>
+          <div>
+            <h1 className="font-display text-2xl font-bold">Admin přihlášení</h1>
+            <p className="text-xs text-muted-foreground">zitny.eu mission control</p>
+          </div>
+        </div>
+        <div className="space-y-3">
+          <Input
+            value={u}
+            onChange={(e) => setU(e.target.value)}
+            placeholder="Uživatel"
+            className="bg-background/40"
+            autoComplete="username"
+          />
+          <Input
+            value={p}
+            onChange={(e) => setP(e.target.value)}
+            type="password"
+            placeholder="Heslo"
+            className="bg-background/40"
+            autoComplete="current-password"
+          />
+        </div>
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full mt-6 bg-gradient-cyber text-primary-foreground shadow-glow"
+        >
+          {loading ? "Přihlašuji…" : "Přihlásit se"}
+        </Button>
+      </form>
     </div>
   );
 }

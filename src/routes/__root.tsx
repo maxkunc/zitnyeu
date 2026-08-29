@@ -11,6 +11,12 @@ import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 
+// The Cloudflare build serves from the real domain; the static GitHub Pages build serves
+// from a subpath on a different host — og:image/twitter:image need an absolute URL to work
+// reliably in link-preview crawlers, so pick the right origin per build target.
+const SITE_URL = __STATIC_SPA__ ? "https://maxkunc.github.io/zitnyeu" : "https://zitny.eu";
+const BASE = import.meta.env.BASE_URL;
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -80,6 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA.",
       },
       { name: "author", content: "zitny.eu" },
+      { name: "theme-color", content: "#00b0ff" },
       { property: "og:title", content: "zitny.eu — Cesta mladých k hvězdám" },
       {
         property: "og:description",
@@ -87,6 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: SITE_URL },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "zitny.eu — Cesta mladých k hvězdám" },
       {
@@ -94,19 +102,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Vesmírné projekty, satelity, stratosférické mise a vzdělávací workshopy pod patronací ESA.",
       },
-      {
-        property: "og:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/10c6026b-e2db-4c84-9e58-03d2b888b1f0/id-preview-82bfa6f5--bdcc7c34-7eed-4e7d-943d-e79b6ef1e3f3.lovable.app-1779216833425.png",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/10c6026b-e2db-4c84-9e58-03d2b888b1f0/id-preview-82bfa6f5--bdcc7c34-7eed-4e7d-943d-e79b6ef1e3f3.lovable.app-1779216833425.png",
-      },
+      { property: "og:image", content: `${SITE_URL}/og-image.jpg` },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:image", content: `${SITE_URL}/og-image.jpg` },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/svg+xml", href: `${BASE}favicon.svg` },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: `${BASE}favicon-32x32.png` },
+      { rel: "apple-touch-icon", sizes: "180x180", href: `${BASE}apple-touch-icon.png` },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

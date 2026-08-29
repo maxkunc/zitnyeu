@@ -145,6 +145,10 @@ function RootComponent() {
       {/* Without shellComponent, nothing else renders <HeadContent/> — React 19 hoists the
           <title>/<meta>/<link> tags it renders into <head> regardless of nesting. */}
       {__STATIC_SPA__ && <HeadContent />}
+      {/* Fixed (scroll-independent) so the same subtle texture continues under every
+          section — nothing to "run out" of at a section boundary. */}
+      <div className="fixed inset-0 -z-10 grid-bg opacity-20 pointer-events-none" />
+      <div className="fixed inset-0 -z-10 starfield opacity-25 pointer-events-none" />
       <Outlet />
       <Toaster />
     </QueryClientProvider>

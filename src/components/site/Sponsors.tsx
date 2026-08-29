@@ -1,4 +1,4 @@
-import { useSite } from "@/lib/site-store";
+import { useSite, type Sponsor } from "@/lib/site-store";
 import { SectionLabel } from "./About";
 import { Button } from "@/components/ui/button";
 import { Handshake, ArrowRight } from "lucide-react";
@@ -19,7 +19,6 @@ export function Sponsors() {
   const { data } = useSite();
   const { t, lang } = useLang();
   const tiers = lang === "en" ? TIER_LABEL_EN : TIER_LABEL_CS;
-  const doubled = [...data.sponsors, ...data.sponsors];
 
   return (
     <section id="sponzori" className="relative py-24">
@@ -32,35 +31,15 @@ export function Sponsors() {
       </div>
 
       <div className="mt-12 relative overflow-hidden">
-        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
-        <div className="flex gap-6 animate-marquee w-max">
-          {doubled.map((s, i) => (
-            <div
-              key={`${s.id}-${i}`}
-              className="glass rounded-xl px-8 py-5 min-w-[220px] flex items-center gap-4"
-            >
-              <div className="h-16 w-16 aspect-square shrink-0 rounded-2xl bg-white/5 overflow-hidden flex items-center justify-center">
-                {s.logo ? (
-                  <img src={s.logo} alt={s.name} className="h-full w-full object-cover" />
-                ) : (
-                  <span className="font-display text-lg font-bold text-muted-foreground">
-                    {s.name.slice(0, 2).toUpperCase()}
-                  </span>
-                )}
-              </div>
-              <div className="text-left">
-                {s.tier && (
-                  <span className="block text-[10px] font-mono uppercase tracking-wider text-primary">
-                    {tiers[s.tier]}
-                  </span>
-                )}
-                <span className="font-display text-sm font-bold tracking-wide text-foreground">
-                  {s.name}
-                </span>
-              </div>
-            </div>
-          ))}
+        <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none" />
+        {/* Two identical, self-contained tracks (each carries its own trailing gap) so
+            translateX(-50%) lands exactly on the seam between them — a flat doubled list
+            with a shared `gap` doesn't split evenly in half, which is what caused the
+            visible jump/snap each time the loop restarted. */}
+        <div className="flex animate-marquee w-max">
+          <SponsorTrack sponsors={data.sponsors} tiers={tiers} />
+          <SponsorTrack sponsors={data.sponsors} tiers={tiers} ariaHidden />
         </div>
       </div>
 
@@ -91,5 +70,46 @@ export function Sponsors() {
         </div>
       </div>
     </section>
+  );
+}
+
+function SponsorTrack({
+  sponsors,
+  tiers,
+  ariaHidden,
+}: {
+  sponsors: Sponsor[];
+  tiers: Record<string, string>;
+  ariaHidden?: boolean;
+}) {
+  return (
+    <div className="flex gap-6 pr-6" aria-hidden={ariaHidden}>
+      {sponsors.map((s) => (
+        <div
+          key={s.id}
+          className="glass rounded-xl px-8 py-5 min-w-[220px] flex items-center gap-4"
+        >
+          <div className="h-16 w-16 aspect-square shrink-0 rounded-2xl bg-white/5 overflow-hidden flex items-center justify-center">
+            {s.logo ? (
+              <img src={s.logo} alt={s.name} className="h-full w-full object-cover" />
+            ) : (
+              <span className="font-display text-lg font-bold text-muted-foreground">
+                {s.name.slice(0, 2).toUpperCase()}
+              </span>
+            )}
+          </div>
+          <div className="text-left">
+            {s.tier && (
+              <span className="block text-[10px] font-mono uppercase tracking-wider text-primary">
+                {tiers[s.tier]}
+              </span>
+            )}
+            <span className="font-display text-sm font-bold tracking-wide text-foreground">
+              {s.name}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

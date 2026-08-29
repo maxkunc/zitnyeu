@@ -76,7 +76,9 @@ function ProjectDetail() {
               <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
               {project.status}
             </span>
-            {project.esa && (
+            {/* Skip when the status pill already says as much (e.g. "Pod patronací ESA")
+                — showing the same phrase twice reads like a mistake, not emphasis. */}
+            {project.esa && !/esa/i.test(project.status) && (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-cyber px-3 py-1 text-[10px] font-mono font-semibold text-primary-foreground uppercase tracking-wider">
                 <Award className="h-3 w-3" /> Pod patronací ESA
               </span>

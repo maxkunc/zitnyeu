@@ -64,7 +64,7 @@ export function Support() {
 
         <div className="mt-14 grid lg:grid-cols-5 gap-8 items-stretch">
           {/* LEFT — donation card */}
-          <div className="lg:col-span-3 relative group">
+          <div className="lg:col-span-3 relative group min-w-0">
             <div className="absolute -inset-px rounded-3xl bg-gradient-cyber opacity-60 blur-xl group-hover:opacity-90 transition-opacity" />
             <div className="relative glass rounded-3xl p-8 md:p-10 shadow-card border border-primary/20 h-full">
               <div className="flex items-center gap-3 text-xs uppercase tracking-[0.25em] text-primary font-mono">
@@ -102,7 +102,7 @@ export function Support() {
                     value={amount ?? ""}
                     onChange={(e) => setAmount(e.target.value ? Number(e.target.value) : null)}
                     placeholder="—"
-                    className="flex-1 bg-transparent outline-none font-display text-2xl font-bold"
+                    className="min-w-0 flex-1 bg-transparent outline-none font-display text-2xl font-bold"
                   />
                   <span className="text-muted-foreground font-mono text-sm">CZK</span>
                 </div>
@@ -138,7 +138,7 @@ export function Support() {
           </div>
 
           {/* RIGHT — QR + perks */}
-          <div className="lg:col-span-2 flex flex-col gap-6">
+          <div className="lg:col-span-2 flex flex-col gap-6 min-w-0">
             <div className="relative glass rounded-3xl p-6 border border-border overflow-hidden">
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-cyber opacity-70" />
               <div className="text-xs uppercase tracking-[0.25em] text-primary font-mono text-center">
@@ -215,7 +215,7 @@ function Perk({ icon, text }: { icon: React.ReactNode; text: string }) {
       <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/15 text-primary">
         {icon}
       </span>
-      <span className="text-sm text-muted-foreground leading-relaxed">{text}</span>
+      <span className="min-w-0 text-sm text-muted-foreground leading-relaxed">{text}</span>
     </li>
   );
 }

@@ -6,8 +6,12 @@ export function Contacts() {
   const { t } = useLang();
 
   return (
-    <section id="kontakty" className="relative py-24">
-      <div className="mx-auto max-w-3xl px-6">
+    // min-h-screen (+ centering) on this last section guarantees at least one viewport's
+    // worth of scroll room below it — otherwise the browser can't scroll far enough for a
+    // "#kontakty" anchor jump to reach the viewport top on tall screens, leaving the tail of
+    // the previous section peeking out above, overlapping the fixed nav.
+    <section id="kontakty" className="relative min-h-screen py-24 flex items-center">
+      <div className="mx-auto max-w-3xl px-6 w-full">
         <SectionLabel>{t("label_contacts")}</SectionLabel>
         <h2 className="mt-6 font-display text-4xl md:text-5xl font-bold">
           {t("contacts_title_a")}{" "}

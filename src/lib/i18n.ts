@@ -137,7 +137,7 @@ const dict = {
 
     hero_badge: "Under patronage of the European Space Agency",
     hero_title_1: "Building a path for young people",
-    hero_title_2: "to the",
+    hero_title_2: "to the ",
     hero_title_3: "stars",
     hero_desc:
       "zitny.eu is a team of young engineers, scientists and dreamers. We run space projects, fly to the stratosphere and inspire the next generation through workshops and talks.",

@@ -82,7 +82,10 @@ export function Projects() {
                         </span>
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">{p.description}</p>
-                      {p.esa && !image && (
+                      {/* Skip this when the status pill already says as much (e.g. "Pod
+                          patronací ESA") — showing the same phrase twice on one card reads
+                          like a mistake, not emphasis. */}
+                      {p.esa && !image && !/esa/i.test(p.status) && (
                         <div className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-primary">
                           <Award className="h-3 w-3" /> Pod patronací ESA
                         </div>

@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSite } from "@/lib/site-store";
+import { resolveProjectImage } from "@/lib/project-images";
 import { ArrowLeft, Award } from "lucide-react";
 
 export const Route = createFileRoute("/projekty/$id")({
@@ -39,12 +40,14 @@ function ProjectDetail() {
     );
   }
 
+  const image = resolveProjectImage(project);
+
   return (
     <article className="min-h-screen pb-24">
       <div className="relative h-[42vh] min-h-[280px] bg-gradient-to-br from-primary/30 via-accent/10 to-transparent overflow-hidden">
-        {project.image ? (
+        {image ? (
           <img
-            src={project.image}
+            src={image}
             alt={project.title}
             className="absolute inset-0 h-full w-full object-cover"
           />

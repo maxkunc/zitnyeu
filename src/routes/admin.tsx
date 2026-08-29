@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { handleImageUpload } from "@/lib/image-utils";
+import { resolveProjectImage, slugify } from "@/lib/project-images";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — zitny.eu" }] }),
@@ -373,8 +374,6 @@ function ProjectsAdmin() {
     }));
   const commitEdit = (title: string) => log(user!, `Upravil projekt „${title}"`);
 
-  const onFile = handleImageUpload;
-
   return (
     <Section
       title="Projekty"
@@ -422,24 +421,27 @@ function ProjectsAdmin() {
           className="bg-background/40"
           rows={2}
         />
-        <div className="grid md:grid-cols-[1fr_auto_auto] gap-3 items-center">
+        <div className="grid md:grid-cols-[1fr_auto] gap-3 items-center">
           <Input
-            placeholder="URL obrázku (nebo nahrajte)"
+            placeholder="URL obrázku (volitelné override — jinak src/assets/<slug>.<přípona>)"
             value={draft.image || ""}
             onChange={(e) => setDraft({ ...draft, image: e.target.value })}
             className="bg-background/40"
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={onFile((url) => setDraft({ ...draft, image: url }))}
-            className="text-xs"
           />
           <Button onClick={add} className="bg-gradient-cyber text-primary-foreground">
             <Plus className="h-4 w-4 mr-2" /> Přidat projekt
           </Button>
         </div>
-        {draft.image && <img src={draft.image} alt="" className="h-20 rounded-md object-cover" />}
+        <p className="text-xs text-muted-foreground">
+          Obrázek projektu se bere ze souboru{" "}
+          <code className="text-[11px]">
+            src/assets/{draft.title ? slugify(draft.title) : "<název-projektu>"}.jpg
+          </code>{" "}
+          v repozitáři (přidejte soubor a nasaďte znovu). Pole výše je jen volitelný override.
+        </p>
+        {resolveProjectImage(draft) && (
+          <img src={resolveProjectImage(draft)} alt="" className="h-20 rounded-md object-cover" />
+        )}
       </div>
 
       <div className="grid gap-3">
@@ -448,8 +450,12 @@ function ProjectsAdmin() {
             key={p.id}
             className="glass rounded-xl p-4 grid md:grid-cols-[80px_1fr_140px_140px_auto_auto] gap-3 items-start"
           >
-            {p.image ? (
-              <img src={p.image} alt={p.title} className="h-20 w-20 rounded-md object-cover" />
+            {resolveProjectImage(p) ? (
+              <img
+                src={resolveProjectImage(p)}
+                alt={p.title}
+                className="h-20 w-20 rounded-md object-cover"
+              />
             ) : (
               <div className="h-20 w-20 rounded-md grid-bg border border-border" />
             )}
@@ -467,23 +473,13 @@ function ProjectsAdmin() {
                 className="bg-background/40"
                 rows={2}
               />
-              <div className="flex items-center gap-2">
-                <Input
-                  placeholder="URL obrázku"
-                  value={p.image || ""}
-                  onChange={(e) => edit(p.id, { image: e.target.value })}
-                  className="bg-background/40 text-xs h-8"
-                />
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={onFile((url) => {
-                    edit(p.id, { image: url });
-                    commitEdit(p.title);
-                  })}
-                  className="text-xs w-32"
-                />
-              </div>
+              <Input
+                placeholder={`URL obrázku (override; jinak src/assets/${slugify(p.title)}.jpg)`}
+                value={p.image || ""}
+                onChange={(e) => edit(p.id, { image: e.target.value })}
+                onBlur={() => commitEdit(p.title)}
+                className="bg-background/40 text-xs h-8"
+              />
             </div>
             <Input
               value={p.status}

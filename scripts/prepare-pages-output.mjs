@@ -1,4 +1,4 @@
-// Finishes the dist-pages/ output from `vite build --config vite.pages.config.ts` for
+// Finishes the dist-pages/ output from `vite build --config vite.pages.config.js` for
 // GitHub Pages: renames the built pages.html to index.html, copies it to 404.html so
 // unknown paths still load the SPA shell (client-side router then renders the right
 // route from location.pathname), and adds .nojekyll so GitHub doesn't run Jekyll over it.

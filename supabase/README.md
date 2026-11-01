@@ -65,6 +65,6 @@ BEGIN
 END $$;
 ```
 
-The frontend (`src/lib/site-store.ts`) maps the login usernames `admin` / `koordinator` /
+The frontend (`src/lib/site-store.js`) maps the login usernames `admin` / `koordinator` /
 `editor` to these three email addresses — the emails must match if you add or rename
 accounts.

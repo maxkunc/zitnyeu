@@ -3,6 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Hardcoded here (matching base: "/zitnyeu/" in vite.pages.config.js) because this static
+      build has no server-side render pass: src/routes/__root.jsx's head() config only reaches
+      the DOM once React mounts and TanStack Router's <HeadContent /> runs, which is too late
+      for some browsers to pick up the tab icon on first load.
+    -->
+    <link rel="icon" type="image/svg+xml" href="/zitnyeu/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/zitnyeu/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/zitnyeu/apple-touch-icon.png" />
   </head>
   <body>
     <div id="root"></div>

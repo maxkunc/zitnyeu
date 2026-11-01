@@ -42,7 +42,7 @@ function Sponsors() {
 
       <div className="mx-auto max-w-7xl px-6 mt-16">
         <div className="relative overflow-hidden rounded-3xl glass border-primary/40 p-8 md:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
+          <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-primary/20 blur-2xl" />
           <div className="relative max-w-2xl">
             <div className="inline-flex items-center gap-2 text-primary mb-3">
               <Handshake className="h-5 w-5" />

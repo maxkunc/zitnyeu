@@ -27,19 +27,14 @@ function Projects() {
                 return (
                   <div key={p.id} className="relative glass rounded-2xl overflow-hidden">
                     <div className="relative h-48 bg-gradient-to-br from-primary/30 via-accent/10 to-transparent overflow-hidden">
-                      {image ? (
+                      {image && (
                         <img
                           src={image}
                           alt={p.title}
                           className="absolute inset-0 h-full w-full object-cover"
                         />
-                      ) : (
-                        <>
-                          <div className="absolute inset-0 grid-bg opacity-50" />
-                          <div className="absolute inset-0 starfield opacity-60" />
-                        </>
                       )}
-                      <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-background/70 backdrop-blur px-3 py-1 text-xs font-mono">
+                      <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1 text-xs font-mono">
                         <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                         {p.status}
                       </span>

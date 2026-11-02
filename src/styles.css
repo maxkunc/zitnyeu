@@ -113,9 +113,7 @@
 
 @layer utilities {
   .glass {
-    background: color-mix(in oklab, var(--background) 55%, transparent);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    background: var(--card);
     border: 1px solid var(--color-border);
   }
   .text-gradient-cyber {
@@ -133,46 +131,12 @@
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
-  .grid-bg {
-    background-image:
-      linear-gradient(to right, oklch(1 0 0 / 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, oklch(1 0 0 / 0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
-  .starfield {
-    background-image:
-      radial-gradient(1px 1px at 20% 30%, white, transparent),
-      radial-gradient(1px 1px at 70% 80%, white, transparent),
-      radial-gradient(1.5px 1.5px at 40% 60%, white, transparent),
-      radial-gradient(1px 1px at 85% 20%, white, transparent),
-      radial-gradient(1px 1px at 10% 75%, white, transparent),
-      radial-gradient(1.5px 1.5px at 55% 15%, white, transparent);
-    background-size: 800px 800px;
-    opacity: 0.5;
-  }
-  @keyframes pulse-glow {
-    0%,
-    100% {
-      box-shadow: 0 0 30px -10px var(--glow);
-    }
-    50% {
-      box-shadow: 0 0 60px -5px var(--glow);
-    }
-  }
-  .animate-pulse-glow {
-    animation: pulse-glow 3s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-12px);
-    }
-  }
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
+  /* Flat two-stop radial wash — a cheap, GPU-safe stand-in for the old blurred glow
+     circles (filter: blur() at large radii is a known WebKit rendering-artifact risk). */
+  .accent-glow {
+    background:
+      radial-gradient(ellipse 500px 400px at 85% 15%, oklch(0.72 0.18 240 / 0.16), transparent),
+      radial-gradient(ellipse 500px 400px at 15% 100%, oklch(0.78 0.16 215 / 0.1), transparent);
   }
   @keyframes marquee {
     from {

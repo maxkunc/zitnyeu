@@ -164,7 +164,6 @@ function LoginScreen({ onLogin }) {
   };
   return (
     <div className="min-h-screen flex items-center justify-center px-6 relative">
-      <div className="absolute inset-0 starfield opacity-50" />
       <form
         onSubmit={submit}
         className="relative glass rounded-2xl p-8 w-full max-w-md shadow-glow"
@@ -417,7 +416,7 @@ function ProjectsAdmin() {
                 className="h-20 w-20 rounded-md object-cover"
               />
             ) : (
-              <div className="h-20 w-20 rounded-md grid-bg border border-border" />
+              <div className="h-20 w-20 rounded-md bg-muted border border-border" />
             )}
             <div className="space-y-2">
               <Input

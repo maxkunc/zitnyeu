@@ -4,11 +4,7 @@ import { useLang } from "@/lib/i18n";
 function Hero() {
   const { t } = useLang();
   return (
-    <section id="domu" className="relative pt-32 pb-32 overflow-hidden">
-      <div className="absolute inset-0 grid-bg opacity-40 [mask-image:linear-gradient(to_bottom,black_60%,transparent)]" />
-      <div className="absolute inset-0 starfield [mask-image:linear-gradient(to_bottom,black_70%,transparent)]" />
-      <div className="absolute top-1/4 right-0 h-96 w-96 rounded-full bg-primary/20 blur-2xl" />
-      <div className="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-accent/10 blur-2xl" />
+    <section id="domu" className="relative pt-32 pb-32 overflow-hidden accent-glow">
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-6">
@@ -32,18 +28,13 @@ function Hero() {
           <Button
             asChild
             size="lg"
-            className="bg-gradient-cyber text-primary-foreground shadow-glow hover:opacity-90 animate-pulse-glow"
+            className="bg-gradient-cyber text-primary-foreground shadow-glow hover:opacity-90"
           >
             <a href="#projekty">
               {t("hero_cta_projects")} <ArrowRight className="ml-2 h-4 w-4" />
             </a>
           </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="border-border bg-background/30 backdrop-blur-md"
-          >
+          <Button asChild size="lg" variant="outline" className="border-border bg-background/60">
             <a href="#kontakty">{t("hero_cta_contact")}</a>
           </Button>
         </div>

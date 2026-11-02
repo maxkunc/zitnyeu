@@ -31,7 +31,6 @@ function Workshops() {
                 className="group relative glass rounded-2xl overflow-hidden hover:shadow-glow transition-shadow"
               >
                 <div className={`relative h-44 bg-gradient-to-br ${V.tint} overflow-hidden`}>
-                  <div className="absolute inset-0 grid-bg opacity-40" />
                   <Icon className="absolute right-6 bottom-6 h-20 w-20 text-foreground/20 group-hover:scale-110 transition-transform" />
                 </div>
                 <div className="p-6">

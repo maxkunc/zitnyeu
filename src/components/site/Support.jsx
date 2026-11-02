@@ -58,8 +58,7 @@ function Support() {
 
         <div className="mt-14 grid lg:grid-cols-5 gap-8 items-stretch">
           {/* LEFT — donation card */}
-          <div className="lg:col-span-3 relative group min-w-0">
-            <div className="absolute -inset-px rounded-3xl bg-gradient-cyber opacity-60 blur-xl group-hover:opacity-90 transition-opacity" />
+          <div className="lg:col-span-3 relative min-w-0">
             <div className="relative glass rounded-3xl p-8 md:p-10 shadow-card border border-primary/20 h-full">
               <div className="flex items-center gap-3 text-xs uppercase tracking-[0.25em] text-primary font-mono">
                 <Sparkles className="h-4 w-4" />
@@ -135,7 +134,6 @@ function Support() {
                 {t("support_qr_title")}
               </div>
               <div className="mt-4 relative mx-auto w-fit">
-                <div className="absolute -inset-3 rounded-2xl bg-primary/30 blur-2xl" />
                 <div className="relative rounded-2xl border border-primary/40 bg-[#0b0f1a] p-3 shadow-glow">
                   <img
                     src={qrUrl}

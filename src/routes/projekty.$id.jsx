@@ -46,18 +46,13 @@ function ProjectDetail() {
             alt={project.title}
             className="absolute inset-0 h-full w-full object-cover"
           />
-        ) : (
-          <>
-            <div className="absolute inset-0 grid-bg opacity-50" />
-            <div className="absolute inset-0 starfield opacity-60" />
-          </>
-        )}
+        ) : null}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         <div className="absolute top-6 left-6">
           <Link
             to="/"
             hash="projekty"
-            className="inline-flex items-center gap-2 rounded-full bg-background/70 backdrop-blur px-4 py-2 text-sm font-mono hover:bg-background transition-colors"
+            className="inline-flex items-center gap-2 rounded-full bg-background/80 px-4 py-2 text-sm font-mono hover:bg-background transition-colors"
           >
             <ArrowLeft className="h-4 w-4" /> Zpět
           </Link>

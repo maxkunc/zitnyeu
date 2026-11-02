@@ -219,12 +219,17 @@ function scheduleSave(content) {
     pendingContent = null;
     saveTimer = null;
     if (!c) return;
-    const { error } = await supabase
-      .from("site_content")
-      .upsert({ id: 1, data: c, updated_at: /* @__PURE__ */ new Date().toISOString() });
-    if (error) {
-      console.error(error);
-      toast.error("Uložení do cloudu selhalo");
+    try {
+      const { error } = await supabase
+        .from("site_content")
+        .upsert({ id: 1, data: c, updated_at: /* @__PURE__ */ new Date().toISOString() });
+      if (error) {
+        console.error(error);
+        toast.error(`Uložení do cloudu selhalo: ${error.message}`);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(`Uložení do cloudu selhalo: ${err instanceof Error ? err.message : String(err)}`);
     }
   }, 400);
 }
@@ -253,12 +258,21 @@ function useSite() {
     scheduleSave(content);
   };
   const log = async (who, action) => {
-    const { data: row, error } = await supabase
-      .from("audit_logs")
-      .insert({ who, action })
-      .select()
-      .single();
-    if (error || !row) return;
+    let row, error;
+    try {
+      ({ data: row, error } = await supabase
+        .from("audit_logs")
+        .insert({ who, action })
+        .select()
+        .single());
+    } catch (err) {
+      console.error(err);
+      return;
+    }
+    if (error || !row) {
+      if (error) console.error(error);
+      return;
+    }
     if (!state.logs.some((l) => l.id === row.id)) {
       setState({
         ...state,
@@ -270,19 +284,30 @@ function useSite() {
     }
   };
   const addMessage = async (msg) => {
-    const { error } = await supabase.from("contact_messages").insert(msg);
-    if (error) {
-      console.error(error);
+    try {
+      const { error } = await supabase.from("contact_messages").insert(msg);
+      if (error) {
+        console.error(error);
+        toast.error("Nepodařilo se odeslat zprávu");
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error(err);
       toast.error("Nepodařilo se odeslat zprávu");
       return false;
     }
-    return true;
   };
   const deleteMessage = async (id) => {
     setState({ ...state, messages: state.messages.filter((m) => m.id !== id) });
-    const { error } = await supabase.from("contact_messages").delete().eq("id", id);
-    if (error) {
-      console.error(error);
+    try {
+      const { error } = await supabase.from("contact_messages").delete().eq("id", id);
+      if (error) {
+        console.error(error);
+        toast.error("Smazání selhalo");
+      }
+    } catch (err) {
+      console.error(err);
       toast.error("Smazání selhalo");
     }
   };

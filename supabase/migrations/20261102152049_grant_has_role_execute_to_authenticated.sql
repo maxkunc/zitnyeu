@@ -1,0 +1,13 @@
+-- The original schema migration (20260823090135_zitny_schema.sql) revoked EXECUTE on
+-- has_role() from `authenticated`, apparently intending to stop it being called directly
+-- as an RPC while still letting it run inside RLS policy evaluation. That doesn't work:
+-- SECURITY DEFINER only elevates privileges for the function's own body (e.g. reading
+-- user_roles), not for the caller's right to invoke the function at all -- and RLS
+-- policies evaluate as the calling role. Every has_role()-gated policy (site_content,
+-- contact_messages, audit_logs, storage, realtime) has therefore been rejecting every
+-- authenticated admin with "permission denied for function has_role" since that first
+-- migration, silently blocking all admin writes -- confirmed live by simulating an
+-- authenticated write as the admin user (SET ROLE authenticated; SET request.jwt.claims)
+-- and seeing the exact 42501 error, then re-running the same simulation after this grant
+-- and seeing it succeed.
+GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) TO authenticated;

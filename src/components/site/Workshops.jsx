@@ -3,6 +3,7 @@ import { SectionLabel } from "./About";
 import { Calendar, ArrowRight, Heart, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLang } from "@/lib/i18n";
+import { resolveProjectImage } from "@/lib/project-images";
 const visuals = [
   { icon: Rocket, tint: "from-primary/40 to-accent/20" },
   { icon: Heart, tint: "from-accent/40 to-primary/10" },
@@ -25,13 +26,22 @@ function Workshops() {
           {data.workshops.map((w, i) => {
             const V = visuals[i % visuals.length];
             const Icon = V.icon;
+            const image = resolveProjectImage(w);
             return (
               <article
                 key={w.id}
                 className="group relative glass rounded-2xl overflow-hidden hover:shadow-glow transition-shadow"
               >
                 <div className={`relative h-44 bg-gradient-to-br ${V.tint} overflow-hidden`}>
-                  <Icon className="absolute right-6 bottom-6 h-20 w-20 text-foreground/20 group-hover:scale-110 transition-transform" />
+                  {image ? (
+                    <img
+                      src={image}
+                      alt={w.title}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  ) : (
+                    <Icon className="absolute right-6 bottom-6 h-20 w-20 text-foreground/20 group-hover:scale-110 transition-transform" />
+                  )}
                 </div>
                 <div className="p-6">
                   <div className="flex items-center gap-2 text-xs text-primary font-mono">

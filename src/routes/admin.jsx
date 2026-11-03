@@ -493,12 +493,12 @@ function ProjectsAdmin() {
 function WorkshopsAdmin() {
   const { data, update, log } = useSite();
   const { user } = useAuth();
-  const [draft, setDraft] = useState({ id: "", title: "", description: "", date: "" });
+  const [draft, setDraft] = useState({ id: "", title: "", description: "", date: "", image: "" });
   const add = () => {
     if (!draft.title.trim()) return toast.error("Zadejte název");
     update((d) => ({ ...d, workshops: [{ ...draft, id: uid() }, ...d.workshops] }));
     log(user, `Přidal workshop „${draft.title}"`);
-    setDraft({ id: "", title: "", description: "", date: "" });
+    setDraft({ id: "", title: "", description: "", date: "", image: "" });
   };
   const remove = (id, title) => {
     update((d) => ({ ...d, workshops: d.workshops.filter((w) => w.id !== id) }));
@@ -535,6 +535,19 @@ function WorkshopsAdmin() {
           className="md:col-span-2 bg-background/40"
           rows={2}
         />
+        <Input
+          placeholder="https://... (celá URL; ne cesta k souboru)"
+          value={draft.image || ""}
+          onChange={(e) => setDraft({ ...draft, image: e.target.value })}
+          className="md:col-span-2 bg-background/40"
+        />
+        <p className="text-xs text-muted-foreground md:col-span-2">
+          Necháte-li prázdné, obrázek se vezme ze souboru{" "}
+          <code className="text-[11px]">
+            src/assets/{draft.title ? slugify(draft.title) : "<název-akce>"}.jpg
+          </code>{" "}
+          v repozitáři, pokud tam existuje.
+        </p>
         <Button onClick={add} className="md:col-span-2 bg-gradient-cyber text-primary-foreground">
           <Plus className="h-4 w-4 mr-2" /> Přidat akci
         </Button>
@@ -543,8 +556,17 @@ function WorkshopsAdmin() {
         {data.workshops.map((w) => (
           <div
             key={w.id}
-            className="glass rounded-xl p-4 grid md:grid-cols-[1fr_180px_auto] gap-3 items-start"
+            className="glass rounded-xl p-4 grid md:grid-cols-[80px_1fr_180px_auto] gap-3 items-start"
           >
+            {resolveProjectImage(w) ? (
+              <img
+                src={resolveProjectImage(w)}
+                alt={w.title}
+                className="h-20 w-20 rounded-md object-cover"
+              />
+            ) : (
+              <div className="h-20 w-20 rounded-md bg-muted border border-border" />
+            )}
             <div>
               <Input
                 value={w.title}
@@ -557,6 +579,12 @@ function WorkshopsAdmin() {
                 onChange={(e) => edit(w.id, { description: e.target.value })}
                 className="bg-background/40 mt-2"
                 rows={2}
+              />
+              <Input
+                placeholder="https://... (celá URL; ne cesta k souboru)"
+                value={w.image || ""}
+                onChange={(e) => edit(w.id, { image: e.target.value })}
+                className="bg-background/40 text-xs h-8 mt-2"
               />
             </div>
             <Input

@@ -382,7 +382,7 @@ function ProjectsAdmin() {
         />
         <div className="grid md:grid-cols-[1fr_auto] gap-3 items-center">
           <Input
-            placeholder="URL obrázku (volitelné override — jinak src/assets/<slug>.<přípona>)"
+            placeholder="https://... (plná URL adresa obrázku; nechte prázdné pro automatický soubor z repozitáře)"
             value={draft.image || ""}
             onChange={(e) => setDraft({ ...draft, image: e.target.value })}
             className="bg-background/40"
@@ -392,11 +392,13 @@ function ProjectsAdmin() {
           </Button>
         </div>
         <p className="text-xs text-muted-foreground">
-          Obrázek projektu se bere ze souboru{" "}
+          Pole výše čeká na celou URL adresu (začínající{" "}
+          <code className="text-[11px]">https://</code>) — nikdy ne cestu k souboru v repozitáři.
+          Necháte-li ho prázdné, obrázek se automaticky vezme ze souboru{" "}
           <code className="text-[11px]">
             src/assets/{draft.title ? slugify(draft.title) : "<název-projektu>"}.jpg
           </code>{" "}
-          v repozitáři (přidejte soubor a nasaďte znovu). Pole výše je jen volitelný override.
+          v repozitáři, pokud tam takový soubor existuje (přidejte ho a nasaďte znovu).
         </p>
         {resolveProjectImage(draft) && (
           <img src={resolveProjectImage(draft)} alt="" className="h-20 rounded-md object-cover" />
@@ -433,12 +435,17 @@ function ProjectsAdmin() {
                 rows={2}
               />
               <Input
-                placeholder={`URL obrázku (override; jinak src/assets/${slugify(p.title)}.jpg)`}
+                placeholder="https://... (celá URL; ne cesta k souboru)"
                 value={p.image || ""}
                 onChange={(e) => edit(p.id, { image: e.target.value })}
                 onBlur={() => commitEdit(p.title)}
                 className="bg-background/40 text-xs h-8"
               />
+              <p className="text-[10px] text-muted-foreground">
+                Prázdné = automaticky z{" "}
+                <code className="text-[10px]">src/assets/{slugify(p.title)}.jpg</code>, pokud tam
+                je.
+              </p>
             </div>
             <Input
               value={p.status}
